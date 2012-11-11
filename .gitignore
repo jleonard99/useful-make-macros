@@ -1,0 +1,3 @@
+# list of files and masks to ignore during git processing
+
+*.tmp
