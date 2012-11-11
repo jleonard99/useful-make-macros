@@ -16,36 +16,37 @@ my newfound skills.
 
 Pretty simple, go to the main project folder and clone a copy of the useful macros.
 
-  >> git clone http://github.com/jleonard99/useful-make-macros.git
+    git clone http://github.com/jleonard99/useful-make-macros.git
   
 # Use
 
 The macros are stored in 5 different MAK files in the src/ folder.  At the top of the main Make, include 
 the following code:
 
-  include useful-make-macros/src/Menus.mak     # common menus and configuration checks
-  include useful-make-macros/src/Makefile.mak  # environment related makefile settings and macros
-  include useful-make-macros/src/Machines.mak  # contains machine specific overrides with examples
-  include useful-make-macros/src/Macros.mak    # additional macros not related to environment
-  include useful-make-macros/src/Recipes.mak   # common recipes
+    include useful-make-macros/src/Menus.mak     # common menus and configuration checks
+    include useful-make-macros/src/Makefile.mak  # environment related makefile settings and macros
+    include useful-make-macros/src/Machines.mak  # contains machine specific overrides with examples
+    include useful-make-macros/src/Macros.mak    # additional macros not related to environment
+    include useful-make-macros/src/Recipes.mak   # common recipes
 
 Need a sample makefile?  copy a working makefile to your project root:
 
-  cp useful-make-macros/samples/Makefile .
+    cp useful-make-macros/samples/Makefile .
   
 # Other useful tools
 
 Because I regularly use LaTex, R, and other gnu utilities on a windows platform, the macros assume that you've 
-got this relative robust development environment installed.  Tools include
+got this relative robust development environment installed.  Tools include:
 
-  gnu utilities including sed, grep, make
-  R statistical software
-  Latex (miktex)
+    gnu utilities including sed, grep, make
+    R statistical software
+    RStudio
+    Latex (miktex)
   
 Need help installing these tools?  I've got another light-weight project with instructions for getting started
 with these tools.  See:
 
-  http://github.com/jleonard99/Getting-Started
+    http://github.com/jleonard99/Getting-Started
 
 
 # License
