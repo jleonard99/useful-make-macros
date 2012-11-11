@@ -9,6 +9,9 @@ ifeq ($(OSTYPE),)
 endif
 
 REPORTER = reporter.bat
+##PDFTEX = pdflatex.exe --quiet --include-directory="$(R_SWEAVE)"
+PDFTEX = pdflatex.exe --quiet
+R = R
 
 # Provide custom macros depending on OS type
 

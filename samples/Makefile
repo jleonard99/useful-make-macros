@@ -20,7 +20,7 @@ clean:
 realclean.title = Clean all local files except expensive data files
 realclean: clean
 	@echo + Really cleaning
-	@-$(RM) $(all-docs) 2>$(NULL)
+	@-$(RM) *.pdf 2>$(NULL)
 	
 baremetal.title = Clean everything but the sources files
 baremetal: realclean

@@ -1,5 +1,10 @@
 # Provide machine specific customizations
 
+ifeq ($(COMPUTERNAME),JL66-VMDSK3)
+
+
+endif 
+
 ifeq ($(COMPUTERNAME),RIPSAW)
 #  R_VERSION = 2.11.1
 #  R_HOME = C:/Program Files/R/R-$(R_VERSION)-x64
@@ -64,24 +69,6 @@ ifeq ($(COMPUTERNAME), seb319-lg101-a1)
   PDFTEX_VERSION = 3.1415926-1.40.11-2.2
 endif
 
-ifeq ($(COMPUTERNAME),JL66-VMDSK3)
-
-### R_VERSION is set in SETRTOOLS.BAT
-### R_VERSION = 2.13.1
-
-  R_HOME = C:/Program Files/R/R-$(R_VERSION)
-  R = R
-  R_SWEAVE = $(R_HOME)/share/texmf/tex/latex
- 
-## NOTE - sh.exe doesn't like "(" or ")" in executable file names!!!
-## Put the folder on the path and call directly.  See PDFTEX below.
-
-  PDFTEX_HOME = "C:/Program Files/MiKTeX 2.9"
-  PDFTEX = pdflatex.exe
-  PDFTEX_VERSION = 2.9.0
-  PDFTEX_READER = cmd.exe /c start
-
-endif 
 
 ifeq ($(COMPUTERNAME),JL66-LP510)
 
