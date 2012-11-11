@@ -20,7 +20,7 @@ Pretty simple, go to the main project folder and clone a copy of the useful macr
   
 # Use
 
-The macros are stored in 5 different MAK files in the src/ folder.  At the top of the main Make, include 
+The macros are stored in 5 different MAK files in the `src/` folder.  At the top of the main Make, include 
 the following code:
 
     include useful-make-macros/src/Menus.mak     # common menus and configuration checks
@@ -32,6 +32,9 @@ the following code:
 Need a sample makefile?  copy a working makefile to your project root:
 
     cp useful-make-macros/samples/Makefile .
+    
+Once installed, you'll want to tell GIT for your current project that it should ignore the code
+in the useful-make-macros folder by adding a new line to the `.gitignore` file.
   
 # Other useful tools
 
