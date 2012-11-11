@@ -1,0 +1,33 @@
+<<echo=F>>=
+source("example1.RParams")
+source("common-utils.R")
+@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+
+\title{Sample latex document}
+\author{John Leonard}
+
+\begin{document}
+
+\section{First}
+
+Hello from Latex
+
+\section{Second}
+
+<<my-label, eval=TRUE, dev='png', fig.height=3 >>=
+set.seed(1213)  # for reproducibility
+
+x = c(1:100)
+y = cumsum(rnorm(x))
+mean(y)
+df = data.frame(x,y)
+
+ggplot() + geom_line(data=df,aes(x=x,y=y))
+
+@
+
+And finally text after the bottom of the figure.
+
+\end{document}
