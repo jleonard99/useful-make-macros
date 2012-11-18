@@ -118,6 +118,7 @@ define recipe-copy-file
 endef
 
 define recipe-sql-to-csv
+	@echo + Query to csv file: $(@)
 	$(REPORTER) csv --query-file=$(^) --csv-file=$(@)
 endef
 
@@ -129,40 +130,3 @@ define recipe-tex-to-pdf
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 endef
 
-define recipe-molten-dictionary-sql
-	@$(REPORTER) run \
-	--report-id=99902 \
-	--table-99902=xlsdict \
-	--factor-fields=xlsdict_id,xlsdict_name,xlsdict_name2,xlsdict_width,xlsdict_format \
-	--factor-fields=xlsdict_header_format,xlsdict_description,xlsdict_keywords,xlsdict_notes,xlsdict_source \
- 	\
-	--save-sql-99902=$(TMPDIR)$(@) \
-	--xls-file=$(TMPDIR)$(word 1,$(subst ., ,$(@))).xls \
-	--xls-dry-run=1 \
-	--no-xls-toc-tab \
-	--no-xls-toc-title="Georgia Institute of Technology" \
-	--no-xls-title="Bag-o-data reporting" \
-	--no-xls-performance-tab
-endef
-
-## this macro defines a newline for use in the following recipe
-
-define \n
-
-
-endef
-
-## this
-define recipe-template-fpayroll-sql
-	@echo + Writing - $(@)
-	@echo + time period: $(subst *,$(comma),$(foreach period,$(payroll.periods),$(period)*))
-	$(REPORTER) run \
-	--report-id=14360 \
-	--save-sql-14360=$(TMPDIR)temp.sql \
-	--$($(word 2,$(subst ., ,$(subst -, ,$(@))))_unittype)-abbr-14360=$(word 2,$(subst ., ,$(subst -, ,$(@)))) \
-	$(foreach period,$(payroll.periods),--fiscal-period-14360=$(period) \$(\n) ) \
-	--xls-file=$(TMPDIR)$(@).xls \
-	--xls-dry-run=1 \
-	--no-xls-performance-tab
-	egrep -v "^--" $(TMPDIR)temp.sql > $(@)
-endef
