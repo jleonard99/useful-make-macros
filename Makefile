@@ -3,6 +3,7 @@
 # Checkout useful-make-macros using GIT
 # copy this file from useful-make-macros/samples/Makefile to whereever
 # --
+include gmsl/gmsl
 include src/Menus.mak     # common menus and configuration checks
 include src/Makefile.mak  # environment related makefile settings and macros
 include src/Machines.mak  # contains machine specific overrides with examples
