@@ -130,3 +130,12 @@ define recipe-tex-to-pdf
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 endef
 
+define recipe-tex-to-pdfbib
+	@echo + [useful] Building PDF with BIB file: $(@)
+	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	bibtex $(firstword $(subst ., ,$(@)))
+	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+endef
+
