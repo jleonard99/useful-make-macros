@@ -1,7 +1,7 @@
 %.pdf : %.tex ; $(recipe-tex-to-pdf)
 %.tex : %.rnw ; $(recipe-rnw-to-tex)
 %.RParams :  ; $(recipe-template-to-rparams)
-%.RData : %.R %.RParams molten-utils.R ; $(recipe-r-to-rdata)
+#%.RData : %.R %.RParams molten-utils.R ; $(recipe-r-to-rdata)
 %.R : %.rnw ; $(recipe-rnw-to-r)
 
 # Handy macros for converting comma-separated lists to space-separated lists and back
