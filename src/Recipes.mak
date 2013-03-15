@@ -36,7 +36,7 @@ define recipe-template-shared
 endef
 
 define recipe-template-to-rparams
-	@echo + [useful] Building RParams file: $(@)
+	@echo [usefl] Building RParams file: $(@)
 	@$(REPORTER) wrap \
 	--no-wrap-in=$(word 1,$(subst -, ,$(subst ., ,$(@))))-template.r \
 	--no-wrap-in=$(firstword $(^)) \
@@ -51,7 +51,7 @@ define recipe-template-to-rparams
 endef
 
 define recipe-template-two-to-rparams
-	@echo + [useful] Building two-params RParams file: $(@)
+	@echo [usefl] Building two-params RParams file: $(@)
 	@$(REPORTER) wrap \
 	--no-wrap-in=$(word 1,$(subst -, ,$(subst ., ,$(@))))-template.r \
 	--no-wrap-in=$(firstword $(^)) \
@@ -67,7 +67,7 @@ endef
 
 
 define recipe-template-to-rnw
-	@echo + [useful] Stamping RNW file: $(@)
+	@echo [usefl] Stamping RNW file: $(@) from $(firstword $(^))
 	@$(REPORTER) wrap \
 	--wrap-in=$(word 1,$(subst -, ,$(subst ., ,$(@))))-template.rnw \
 	--wrap-out=$(@) \
@@ -77,53 +77,53 @@ define recipe-template-to-rnw
 endef
 
 define recipe-rnw-to-tex-sweave
-	@echo + [useful] Building TEX file: $(@)
+	@echo [usefl] Building TEX file: $(@)
 	@"$(R)" --slave --quiet -e \
 	"Sweave('$(word 1,$(subst ., ,$(@))).rnw',output='$(word 1,$(subst ., ,$(@))).tex',quiet=T)"
 endef
 
 define recipe-rnw-to-tex
-	@echo + [useful] Knitting rnw to tex: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); opts_knit\$$set(progress = FALSE, verbose = FALSE); knit('$(firstword $(^))')" 2>&1 | sed -e "s/^/+ - /"
+	@echo [usefl] Knitting rnw to tex: $(@)
+	"$(R)" --slave --quiet -e "library(knitr); opts_knit\$$set(progress = FALSE, verbose = FALSE); suppressMessages(knit('$(firstword $(^))'))" 2>&1 | sed -e "s/^/+ /"
 endef
 
 define recipe-rnw-to-r
-	@echo + [useful] Purling rnw to R: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); opts_knit\$$set(progress = FALSE, verbose = FALSE); purl('$(firstword $(^))')" 2>&1 | sed -e "s/^/+ - /"
+	@echo [usefl] Purling rnw to R: $(@)
+	"$(R)" --slave --quiet -e "library(knitr); opts_knit\$$set(progress = FALSE, verbose = FALSE); purl('$(firstword $(^))')" 2>&1 | sed -e "s/^/+ /"
 endef
 
 define recipe-r-to-rdata
-	@echo + [useful] Storing RData file: $(@) using $(word 1,$(^))
+	@echo [usefl] Storing RData file: $(@) using $(word 1,$(^))
 	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 1>$(NULL)
 endef
 
 define recipe-r-to-png
-	@echo + [useful] Painting PNG file: $(@) using $($(word 1,$(subst ., ,$(subst -, ,$(@)))).$(word 3,$(subst ., ,$(subst -, ,$(@))))-source)
+	@echo [usefl] Painting PNG file: $(@) using $($(word 1,$(subst ., ,$(subst -, ,$(@)))).$(word 3,$(subst ., ,$(subst -, ,$(@))))-source)
 	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 1>$(NULL)
 endef
 
 define recipe-r-to-pdf
-	@echo + [useful] Painting PDF file: $(@) using $($(word 1,$(subst ., ,$(subst -, ,$(@)))).$(word 3,$(subst ., ,$(subst -, ,$(@))))-source)
+	@echo [usefl] Painting PDF file: $(@) using $($(word 1,$(subst ., ,$(subst -, ,$(@)))).$(word 3,$(subst ., ,$(subst -, ,$(@))))-source)
 	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 1>$(NULL)
 endef
 
 define recipe-r-to-txt
-	@echo + [useful] Writing TXT file: $(@) using $($(word 1,$(subst ., ,$(subst -, ,$(@)))).$(word 3,$(subst ., ,$(subst -, ,$(@))))-source)
+	@echo [usefl] Writing TXT file: $(@) using $($(word 1,$(subst ., ,$(subst -, ,$(@)))).$(word 3,$(subst ., ,$(subst -, ,$(@))))-source)
 	$(R) --slave --quiet -e "build.file='$(@)'; save.as.txt.file=T; source('$(word 1,$(subst ., ,$(@))).R')"  1>$(NULL)
 endef
 
 define recipe-copy-file
-	@echo + [useful] Copying $(^)
+	@echo [usefl] Copying $(^)
 	$(COPY) $(^) $(@)
 endef
 
 define recipe-sql-to-csv
-	@echo + [useful] Query to csv file: $(@)
+	@echo [usefl] Query to csv file: $(@)
 	$(REPORTER) csv --query-file=$(^) --csv-file=$(@)
 endef
 
 define recipe-tex-to-pdf
-	@echo + [useful] Building PDF file: $(@)
+	@echo [usefl] Building PDF file: $(@)
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
@@ -131,7 +131,7 @@ define recipe-tex-to-pdf
 endef
 
 define recipe-tex-to-pdfbib
-	@echo + [useful] Building PDF with BIB file: $(@)
+	@echo [usful] Building PDF with BIB file: $(@)
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	bibtex $(firstword $(subst ., ,$(@)))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
