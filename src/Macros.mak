@@ -12,12 +12,12 @@ DW.NAME = IRPDEV
 DW.USER.ID = $($(DW.NAME)_USER)/$($(DW.NAME)_PASS)@$(DW.NAME).WORLD
 DW.CMD = sqlplus -S $(DW.USER.ID)
 
-servers := IRPROD IRPDEV DWPROD DWTEST BGTEST IRPBAG DSGDEVW DSGDEVG DSGDEVM
+servers := IRPROD IRPDEV DWPROD DWTEST BGTEST IRPBAG DSGDEVW DSGDEVG DSGDEVM DSGTESTM
 $(foreach server,$(servers),$(eval $(server).CMD = sqlplus $($(server)_USER)/$($(server)_PASS)@$(server).WORLD ) )
 
 $(servers):
 	@echo + =============================================================================
-	@echo + Running SQLPLUS on $(@).WORLD for user $($(@)_USER)  - $($(@)_DSN)
+	@echo + Running SQLPLUS on $($(@)_USER)@$(@).WORLD - $($(@)_DSN)
 	@echo + -----------------------------------------------------------------------------
 	@$($(@).CMD)
 
