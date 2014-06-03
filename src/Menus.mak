@@ -19,7 +19,7 @@ define titles
 	@echo + UNSORTED list of top level targets with titles  -try make sorted-
 	@echo +
 	@grep -P -i "\.title(.*)=" $(title.search.files)  | grep -v "\@grep" | sed -n -e "s/\.title//p" | sed -e "s/^/+ /" | sed -e "s/==//"
-	@grep -P -i "\.title(.*)=" Makefile.  | grep -v "\@grep" | sed -n -e "s/\.title//p" | sed -e "s/^/\+ /" | sed -e "s/==//"
+#	@grep -P -i "\.title(.*)=" Makefile.  | grep -v "\@grep" | sed -n -e "s/\.title//p" | sed -e "s/^/\+ /" | sed -e "s/==//"
 	@echo +
 endef
 
