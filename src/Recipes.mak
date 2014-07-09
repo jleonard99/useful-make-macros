@@ -159,6 +159,14 @@ define recipe-sql-to-csv
 endef
 
 define recipe-tex-to-pdf
+	@echo [usefl] Building PDF file: $(@) - XELATEX
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+endef
+
+define recipe-tex-to-pdf-old
 	@echo [usefl] Building PDF file: $(@)
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
