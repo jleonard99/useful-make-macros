@@ -7,27 +7,25 @@ endif
 
 title.search.files = Makefile
 
-titles.title = Show titles in targets
-titles: ; $(titles)
+sorted : ; $(sortedtitles)  # default target if nothing is selected 
+titles unsorted : ; $(titles)
 
-sorted.title = Show sorted titles 
-sorted: ; $(sortedtitles)
+no_target__xxx : ;
 
 
 define titles
-	@echo + =============================================================================
-	@echo + UNSORTED list of top level targets with titles  -try make sorted-
+	@echo + -----------------------------------------------------------------------------
+	@echo + UNSORTED List of targets:
 	@echo +
-	@grep -P -i "\.title(.*)=" $(title.search.files)  | grep -v "\@grep" | sed -n -e "s/\.title//p" | sed -e "s/^/+ /" | sed -e "s/==//"
-	@grep -P -i "\.title(.*)=" Makefile.  | grep -v "\@grep" | sed -n -e "s/\.title//p" | sed -e "s/^/\+ /" | sed -e "s/==//"
+	$(foreach item,$(shell make -p no_target__xxx | grep -P -o -s "^[-|\_|a-zA-Z0-9\.]+\.title" | sed -e "s/\.title//g" ),echo + $(item) - $($(item).title)$(\n))
 	@echo +
 endef
 
 define sortedtitles
-	@echo + =============================================================================
-	@echo + SORTED list of top level targets with titles -try make titles-
+	@echo + -----------------------------------------------------------------------------
+	@echo + SORTED List of targets:
 	@echo +
-	@grep -P -i "\.title(.*)=" $(title.search.files)  | grep -v "\@grep" | sed -n -e "s/\.title//p" | sed -e "s/^/+ /" | sed -e "s/==//" | sort
+	$(foreach item,$(sort $(shell make -p no_target__xxx | grep -P -o -s "^[-|\_|a-zA-Z0-9\.]+\.title" | sed -e "s/\.title//g" )),echo + $(item) - $($(item).title)$(\n))
 	@echo +
 endef
 
