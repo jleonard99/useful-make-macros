@@ -183,3 +183,12 @@ define recipe-tex-to-pdfbib
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 endef
 
+define recipe-tex-to-xelatex-bib
+	@echo [usful] Building PDF with BIB file: $(@)
+	xelatex --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	bibtex $(word 1,$(subst ., ,$(@)))
+	xelatex --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+endef
+
