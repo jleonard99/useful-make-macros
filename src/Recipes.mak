@@ -153,9 +153,9 @@ define recipe-copy-file
 	$(COPY) $(^) $(@)
 endef
 
-define recipe-sql-to-csv
+define recipe-sql-to-csv-dsgroot
 	@echo [usefl] Query to csv file: $(@)
-	$(REPORTER) csv --query-file=$(^) --csv-file=$(@)
+	$(REPORTER) csv --query-file=$(^) --csv-file=$(@) --DSN=$(DSGROOT_DSN) --USER=$(DSGROOT_USER) --PASS=$(DSGROOT_PASS)
 endef
 
 define recipe-tex-to-pdf
