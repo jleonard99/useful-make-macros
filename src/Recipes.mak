@@ -166,8 +166,16 @@ define recipe-tex-to-pdf
 	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 endef
 
-define recipe-tex-to-pdf-old
-	@echo [usefl] Building PDF file: $(@)
+define recipe-tex-to-xelatex
+	@echo [usefl] Building PDF file: $(@) - XELATEX
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+endef
+
+define recipe-tex-to-pdflatex
+	@echo [usefl] Building PDF file: $(@) - $(PDFTEX)
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
