@@ -153,9 +153,9 @@ define recipe-copy-file
 	$(COPY) $(^) $(@)
 endef
 
-define recipe-sql-to-csv
+define recipe-sql-to-csv-dsgroot
 	@echo [usefl] Query to csv file: $(@)
-	$(REPORTER) csv --query-file=$(^) --csv-file=$(@)
+	$(REPORTER) csv --query-file=$(^) --csv-file=$(@) --DSN=$(DSGROOT_DSN) --USER=$(DSGROOT_USER) --PASS=$(DSGROOT_PASS)
 endef
 
 define recipe-tex-to-pdf
@@ -166,8 +166,16 @@ define recipe-tex-to-pdf
 	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 endef
 
-define recipe-tex-to-pdf-old
-	@echo [usefl] Building PDF file: $(@)
+define recipe-tex-to-xelatex
+	@echo [usefl] Building PDF file: $(@) - XELATEX
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+endef
+
+define recipe-tex-to-pdflatex
+	@echo [usefl] Building PDF file: $(@) - $(PDFTEX)
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
@@ -181,5 +189,14 @@ define recipe-tex-to-pdfbib
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+endef
+
+define recipe-tex-to-xelatex-bib
+	@echo [usful] Building PDF with BIB file: $(@)
+	xelatex --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	bibtex $(word 1,$(subst ., ,$(@)))
+	xelatex --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 endef
 
