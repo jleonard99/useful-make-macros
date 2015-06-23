@@ -1,6 +1,6 @@
-
-
-# Determine current and previous YYYYMM periods from OS.  Use calculator functions to get current and current fiscal years.
+##
+## Determine current and previous YYYYMM periods from OS.  Use calculator functions to get current and current fiscal years.
+##
 
 # handy calculator functions.  
 # calc.year : given an input YYYYMM period, return a numeric calendar year
@@ -8,19 +8,22 @@
 
 calc.year = $(call substr,$(1),1,4)
 calc.mo = $(call substr,$(1),5,6)
+
+# pulls
 calc.fy = $(if $(findstring $(call substr,$(1),5,6),07 08 09 10 11 12),$(call inc,$(call substr,$(1),1,4)),$(call substr,$(1),1,4))
 calc.cy = $(if $(findstring $(call substr,$(1),5,6),07 08 09 10 11 12),$(call substr,$(1),1,4),$(call dec,$(call substr,$(1),1,4)))
 
 pick.fy = $(call substr,$(1),3,6)
 pick.fp = $(call substr,$(1),3,8)
 
-arg.base = $(word 1,$(subst ., ,$(subst -, ,$(@))))
-arg.unit = $(word 2,$(subst ., ,$(subst -, ,$(@))))
-arg.time = $(word 3,$(subst ., ,$(subst -, ,$(@))))
-arg.term = $(word 3,$(subst ., ,$(subst -, ,$(@))))
+arg.base = $(word 1,$(subst ., ,$(subst -, ,$(1))))
+arg.unit = $(word 2,$(subst ., ,$(subst -, ,$(1))))
+arg.time = $(word 3,$(subst ., ,$(subst -, ,$(1))))
+arg.term = $(word 3,$(subst ., ,$(subst -, ,$(1))))
 arg.fy = $(call pick.fy,$(call arg.time,$(1)))
 arg.fp = $(call pick.fp,$(call arg.time,$(1)))
 
+# pre-pend strings to yearmo stuff
 insert.fp = FP$(1)
 insert.fy = FY$(1)
 insert.cp = CP$(1)
@@ -28,17 +31,6 @@ insert.time = time-$(1)
 insert.unit = unit-$(1)
 
 to.list = $(subst $(space),$(comma),$(1))
-
-fp.to.5.fp  = $(call map,insert.fp,$(call calc.5.fp,$(1)))
-fp.to.6.fp  = $(call map,insert.fp,$(call calc.6.mo,$(1)))
-fp.to.12.fp = $(call map,insert.fp,$(call calc.12.mo,$(1)))
-
-arg.fp.to.5.fp  = $(call fp.to.5.fp,$(call arg.fp,$(@)))
-arg.fp.to.12.fp = $(call fp.to.12.fp,$(call arg.fp,$(@)))
-
-arg.fp.to.5.fp.list  = $(call to.list,$(call arg.fp.to.5.fp,$(1)))
-arg.fp.to.12.fp.list = $(call to.list,$(call arg.fp.to.12.fp,$(1)))
-
 
 # convert calendar month to fiscal period month
 $(call set,set.fm,01,07)
@@ -55,6 +47,7 @@ $(call set,set.fm,11,05)
 $(call set,set.fm,12,06)
 calc.fm = $(call get,set.fm,$(call substr,$(1),5,6))
 
+# convert fiscal period month to words
 $(call set,set.fpname,01,Jul)
 $(call set,set.fpname,02,Aug)
 $(call set,set.fpname,03,Sep)
@@ -69,7 +62,7 @@ $(call set,set.fpname,11,May)
 $(call set,set.fpname,12,Jun)
 calc.fpname = $(call get,set.fpname,$(call substr,$(1),7,8))
 
-
+# convert integer month to 2-digit month (addsleading zero if needed)
 $(call set,set.mo,1,01)
 $(call set,set.mo,2,02)
 $(call set,set.mo,3,03)
@@ -83,40 +76,103 @@ $(call set,set.mo,10,10)
 $(call set,set.mo,11,11)
 $(call set,set.mo,12,12)
 
+# Convert a calendar period (201506 to fiscal period 201511)
+convert.cp.to.fp = $(call calc.fy,$(1))$(call calc.fm,$(1))
 
-curr.yearmo := $(shell date.exe +%Y%m)
+## curr.yearmo:  ex. 201506
+curr.time := $(shell date.exe +%Y%m)
+curr.yearmo := $(call memoize,curr.time)
+
+## returns pieces of current month
 curr.year := $(call calc.year,$(curr.yearmo))
 curr.mo := $(call calc.mo,$(curr.yearmo))
 curr.fy := $(call calc.fy,$(curr.yearmo))
 curr.fm := $(call calc.fm,$(curr.yearmo))
-curr.fp := $(call calc.fy,$(curr.yearmo))$(call calc.fm,$(curr.yearmo))
+curr.fp := $(call convert.cp.to.fp,$(curr.yearmo))
 
+# previous time returns YYYYMM from x months ago
 prev.time = $(shell date.exe +%Y%m --date="$(1)month")
-prev.yearmo := $(call memoize,prev.time,-1)
+#ex.3.months.ago.yearmo := $(call prev.time,-3)
+#ex.0.months.ago.yearmo := $(call prev.time,0)
 
+## previous month: ex. 201505
+prev.yearmo := $(call memoize,prev.time,-1)
 prev.year := $(call calc.year,$(prev.yearmo))
 prev.mo := $(call calc.mo,$(prev.yearmo))
 prev.fy := $(call dec,$(call calc.fy,$(prev.yearmo)))
 prev.fm := $(call calc.fm,$(prev.yearmo))
 prev.fp := $(call calc.fy,$(prev.yearmo))$(call calc.fm,$(prev.yearmo))
 
-calc.5.yr = $(foreach year,0 1 2 3 4,$(call subtract,$(call calc.year,$(1)),$(year)))
-calc.5.fp = $(foreach year,0 1 2 3 4,$(call subtract,$(call calc.year,$(1)),$(year))$(call calc.mo,$(1)))
+## core calculators
 
-calc.12.mo = $(foreach mo,0 1 2 3 4 5 6 7 8 9 10 11,$(if $(call gt,$(call calc.mo,$(1)),$(mo)),$(call calc.year,$(1)),$(call subtract,$(call calc.year,$(1)),1))$(call get,set.mo,$(if $(call gt,$(call calc.mo,$(1)),$(mo)),$(call subtract,$(call calc.mo,$(1)),$(mo)),$(call subtract,$(call plus,$(call calc.mo,$(1)),12),$(mo)))))
+calc.seq = $(call sequence,0,$(call dec,$(1)))
+#ex.calc.seq.12 := $(call calc.seq,12)
+#ex.calc.seq.3 := $(call calc.seq,3)
 
-calc.6.mo = $(foreach mo,0 1 2 3 4 5,$(if $(call gt,$(call calc.mo,$(1)),$(mo)),$(call calc.year,$(1)),$(call subtract,$(call calc.year,$(1)),1))$(call get,set.mo,$(if $(call gt,$(call calc.mo,$(1)),$(mo)),$(call subtract,$(call calc.mo,$(1)),$(mo)),$(call subtract,$(call plus,$(call calc.mo,$(1)),12),$(mo)))))
+yearmo.to.seq = $(call plus,$(call multiply,$(call subtract,$(call calc.year,$(1)),1950),12),$(call dec,$(call calc.mo,$(1))))
+seq.to.yearmo = $(call plus,$(call divide,$(1),12),1950)$(call get,set.mo,$(call inc,$(call subtract,$(1),$(call multiply,$(call divide,$(1),12),12))))
+
+#ex.yearmo.to.seq := $(call yearmo.to.seq,$(curr.yearmo))
+#ex.seq.to.yearmo := $(call seq.to.yearmo,$(ex.yearmo.to.seq))
+
+# returns a list of N previous periods including current period by year.  works for both FY and CY
+calc.n.mo.by.yr = $(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call calc.year,$(1)),$(year))$(call calc.mo,$(1)))
+
+#ex.calc.5.fp.by.fy := $(call calc.n.mo.by.yr,$(curr.fp),5)
+#ex.calc.3.cp.by.cy := $(call calc.n.mo.by.yr,$(curr.yearmo),3)
+
+# returns a list of N previous periods including current period by period.  works for by FY and CY
+calc.n.mo.by.mo = $(foreach mo,$(call calc.seq,$(2)),$(call seq.to.yearmo,$(call subtract,$(call yearmo.to.seq,$(1)),$(mo))))
+
+#ex.calc.36.fp.by.fp := $(call calc.n.mo.by.mo,201509,36)
+#ex.calc.12.fp.by.fp := $(call calc.n.mo.by.mo,201511,12)
+#ex.calc.3.mo.by.mo  := $(call calc.n.mo.by.mo,201506, 3)
+
+# given fiscal period, return list of new fiscal periods
+
+fp.by.n.fy = $(call map,insert.fp,$(call calc.n.mo.by.yr,$(call pick.fp,$(1)),$(2)))
+fp.by.n.fp = $(call map,insert.fp,$(call calc.n.mo.by.mo,$(call pick.fp,$(1)),$(2)))
+
+#ex.fp.by.n.fy := $(call fp.by.n.fy,FP201511,5)
+#ex.fp.by.n.fp := $(call fp.by.n.fp,FP201511,60)
 
 
-window.prev.fp.5.fy  := $(call calc.5.yr,$(prev.yearmo))
+# macros for use within recipes.  Assumes 2 param file naming format:  emp0-ENGR-FP201511.xls
 
-window.prev.fp.5.fp  := $(call fp.to.5.fp,$(prev.fp))
-window.prev.fp.6.fp  := $(call fp.to.6.fp,$(prev.fp))
-window.prev.fp.12.fp := $(call fp.to.12.fp,$(prev.fp))
+arg.fp.by.n.fy = $(call fp.by.n.fy,$(call arg.time,$(1)),$(2))
+arg.fp.by.n.fp = $(call fp.by.n.fp,$(call arg.time,$(1)),$(2))
+arg.fp.by.n.fy.list = $(call to.list,$(call arg.fp.by.n.fy,$(1),$(2)))
+arg.fp.by.n.fp.list = $(call to.list,$(call arg.fp.by.n.fp,$(1),$(2)))
 
-time.vars := curr.yearmo curr.year curr.mo curr.fy curr.fp prev.yearmo prev.year prev.mo prev.fy prev.fp window.prev.fp.5.fy window.prev.fp.5.fp window.prev.fp.12.fp
+arg.fp.by.5.fy  = $(call fp.by.n.fy,$(call arg.time,$(1)),5)
+arg.fp.by.12.fp = $(call fp.by.n.fp,$(call arg.time,$(1)),12)
+arg.fp.by.5.fy.list  = $(call to.list,$(call arg.fp.by.5.fy,$(1)))
+arg.fp.by.12.fp.list = $(call to.list,$(call arg.fp.by.12.fp,$(1)))
 
-show-time.title := Show time variables available in makefile
+#ex.temp.file := emp0-ENGR-FP201511.xls
+#ex.arg.fp.by.5.fy  := $(call arg.fp.by.5.fy,$(ex.temp.file))
+#ex.arg.fp.by.12.fp := $(call arg.fp.by.12.fp,$(ex.temp.file))
+#ex.arg.fp.by.5.fy.list := $(call arg.fp.by.5.fy.list,$(ex.temp.file))
+#ex.arg.fp.by.12.fp.list := $(call arg.fp.by.n.fp.list,$(ex.temp.file),12)
+
+# macros for use in Makefile to establish file names
+
+window.prev.5.fp.by.fy  := $(call fp.by.n.fy,FP$(prev.fp),5)
+window.prev.3.fp.by.fp  := $(call fp.by.n.fp,FP$(prev.fp),3)
+window.prev.12.fp.by.fp := $(call fp.by.n.fp,FP$(prev.fp),12)
+
+time.vars := curr.yearmo curr.year curr.mo curr.fy curr.fp prev.yearmo prev.year prev.mo prev.fy prev.fp 
+
+show-time.title := Show time.vars available in makefile
 show-time:
 	@echo time variables available for use in makefile
 	$(foreach var,$(time.vars),@echo $(var): $($(var))$(\n))
+	@echo 
+	@echo SAMPLE CALLS for use Makefile header
+	@echo window.prev.5.fp.by.fy  := $$\(call fp.by.n.fy,FP$$\(prev.fp\),5\)
+	@echo window.prev.3.fp.by.fp  := $$\(call fp.by.n.fp,FP$$\(prev.fp\),3\)
+	@echo $$\(foreach period,$$\(call fp.by.n.fp,FP$$\(prev.fp\),6\),emp0-ENGR-$$\(period\).xls\)
+	@echo 
+	@echo SAMPLE CALLS for use in recipes.
+	@echo --fiscal-period-30302=$$\(call arg.fp.by.n.fp.list,$$\(@\),12\)
+	@echo --fiscal-year-32488=$$\(call arg.fp.by.n.fy.list,$$\(@\),5\)
