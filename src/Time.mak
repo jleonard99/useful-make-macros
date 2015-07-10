@@ -66,7 +66,7 @@ $(call set,set.fpname,09,Mar)
 $(call set,set.fpname,10,Apr)
 $(call set,set.fpname,11,May)
 $(call set,set.fpname,12,Jun)
-calc.fpname = $(call get,set.fpname,$(call substr,$(1),7,8))
+calc.fpname = $(call get,set.fpname,$(call substr,$(1),5,6))
 
 # convert integer month to 2-digit month (addsleading zero if needed)
 $(call set,set.mo,1,01)
@@ -168,7 +168,11 @@ window.prev.5.fp.by.fy  := $(call fp.by.n.fy,FP$(prev.fp),5)
 window.prev.3.fp.by.fp  := $(call fp.by.n.fp,FP$(prev.fp),3)
 window.prev.12.fp.by.fp := $(call fp.by.n.fp,FP$(prev.fp),12)
 
-time.vars := curr.yearmo curr.year curr.mo curr.fy curr.fp prev.yearmo prev.year prev.mo prev.fy prev.fp 
+convert.fp.to.words  = $(call calc.fpname,$(call pick.fp,$(1))) $(call calc.cy,$(call pick.fp,$(1)))
+
+curr.fp.in.words := $(call convert.fp.to.words,FP$(curr.fp))
+
+time.vars := curr.yearmo curr.year curr.mo curr.fy curr.fp curr.fp.in.words prev.yearmo prev.year prev.mo prev.fy prev.fp 
 
 show-time.title := Show time.vars available in makefile
 show-time:
@@ -181,6 +185,9 @@ show-time:
 	@echo $$\(foreach period,$$\(call fp.by.n.fp,FP$$\(prev.fp\),6\),emp0-ENGR-$$\(period\).xls\)
 	@echo 
 	@echo SAMPLE CALLS for use in recipes.
+	@echo --dept-abbr-30010=$$\(call arg.unit,$$\(@\)\)
+	@echo --title-34225=\"Payroll - $$\(call convert.fp.to.words,$$\(call arg.time,$$\(@\)\)\)\"
+	@echo --fiscal-period-32415=$$\(call arg.time,$$\(@\)\)
 	@echo --fiscal-period-30302=$$\(call arg.fp.by.n.fp.list,$$\(@\),12\)
 	@echo --fiscal-year-32488=$$\(call arg.fp.by.n.fy.list,$$\(@\),5\)
 	@echo 
