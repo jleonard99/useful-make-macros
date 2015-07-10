@@ -23,6 +23,12 @@ arg.term = $(word 3,$(subst ., ,$(subst -, ,$(1))))
 arg.fy = $(call pick.fy,$(call arg.time,$(1)))
 arg.fp = $(call pick.fp,$(call arg.time,$(1)))
 
+arg.1 = $(word 1,$(subst ., ,$(subst -, ,$(1))))
+arg.2 = $(word 2,$(subst ., ,$(subst -, ,$(1))))
+arg.3 = $(word 3,$(subst ., ,$(subst -, ,$(1))))
+arg.4 = $(word 4,$(subst ., ,$(subst -, ,$(1))))
+
+
 # pre-pend strings to yearmo stuff
 insert.fp = FP$(1)
 insert.fy = FY$(1)
@@ -136,6 +142,7 @@ fp.by.n.fp = $(call map,insert.fp,$(call calc.n.mo.by.mo,$(call pick.fp,$(1)),$(
 #ex.fp.by.n.fy := $(call fp.by.n.fy,FP201511,5)
 #ex.fp.by.n.fp := $(call fp.by.n.fp,FP201511,60)
 
+arg.fp.by.n.fp.sql = $(call to.list,$(call single.quote,$(call arg.fp.by.n.fp,$(1),$(2))))
 
 # macros for use within recipes.  Assumes 2 param file naming format:  emp0-ENGR-FP201511.xls
 
@@ -176,3 +183,4 @@ show-time:
 	@echo SAMPLE CALLS for use in recipes.
 	@echo --fiscal-period-30302=$$\(call arg.fp.by.n.fp.list,$$\(@\),12\)
 	@echo --fiscal-year-32488=$$\(call arg.fp.by.n.fy.list,$$\(@\),5\)
+	@echo 
