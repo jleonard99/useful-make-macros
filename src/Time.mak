@@ -184,8 +184,8 @@ curr.fp.in.words := $(call convert.fp.to.words,FP$(curr.fp))
 
 time.vars := curr.yearmo curr.year curr.mo curr.fy curr.fp curr.fp.in.words prev.yearmo prev.year prev.mo prev.fy prev.fp next.fy window.curr.4.fy.by.fy
 
-show-time.title := Show time.vars available in makefile
-show-time:
+help-time.title := Usage info and time.vars available in makefile
+help-time:
 	@echo time variables available for use in makefile
 	$(foreach var,$(time.vars),@echo $(var): $($(var))$(\n))
 	@echo 
