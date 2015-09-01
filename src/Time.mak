@@ -30,11 +30,11 @@ arg.4 = $(word 4,$(subst ., ,$(subst -, ,$(1))))
 
 
 # pre-pend strings to yearmo stuff
-insert.fp = FP$(1)
-insert.fy = FY$(1)
-insert.cp = CP$(1)
-insert.time = time-$(1)
-insert.unit = unit-$(1)
+prepend.fp = FP$(1)
+prepend.fy = FY$(1)
+prepend.cp = CP$(1)
+prepend.time = time-$(1)
+prepend.unit = unit-$(1)
 
 to.list = $(subst $(space),$(comma),$(1))
 
@@ -92,7 +92,6 @@ curr.yearmo := $(call memoize,curr.time)
 ## returns pieces of current month
 curr.year := $(call calc.year,$(curr.yearmo))
 curr.mo := $(call calc.mo,$(curr.yearmo))
-curr.fy := $(call calc.fy,$(curr.yearmo))
 curr.fm := $(call calc.fm,$(curr.yearmo))
 curr.fp := $(call convert.cp.to.fp,$(curr.yearmo))
 
@@ -105,9 +104,12 @@ prev.time = $(shell date.exe +%Y%m --date="$(1)month")
 prev.yearmo := $(call memoize,prev.time,-1)
 prev.year := $(call calc.year,$(prev.yearmo))
 prev.mo := $(call calc.mo,$(prev.yearmo))
-prev.fy := $(call dec,$(call calc.fy,$(prev.yearmo)))
 prev.fm := $(call calc.fm,$(prev.yearmo))
 prev.fp := $(call calc.fy,$(prev.yearmo))$(call calc.fm,$(prev.yearmo))
+
+curr.fy := $(call calc.fy,$(curr.yearmo))
+prev.fy := $(call dec,$(curr.fy))
+next.fy := $(call inc,$(curr.fy))
 
 ## core calculators
 
@@ -136,23 +138,30 @@ calc.n.mo.by.mo = $(foreach mo,$(call calc.seq,$(2)),$(call seq.to.yearmo,$(call
 
 # given fiscal period, return list of new fiscal periods
 
-fp.by.n.fy = $(call map,insert.fp,$(call calc.n.mo.by.yr,$(call pick.fp,$(1)),$(2)))
-fp.by.n.fp = $(call map,insert.fp,$(call calc.n.mo.by.mo,$(call pick.fp,$(1)),$(2)))
+fp.by.n.fy = $(call map,prepend.fp,$(call calc.n.mo.by.yr,$(call pick.fp,$(1)),$(2)))
+fp.by.n.fp = $(call map,prepend.fp,$(call calc.n.mo.by.mo,$(call pick.fp,$(1)),$(2)))
+
+fy.by.n.fy = $(call map,prepend.fy,$(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call pick.fy,$(1)),$(year))))
 
 #ex.fp.by.n.fy := $(call fp.by.n.fy,FP201511,5)
 #ex.fp.by.n.fp := $(call fp.by.n.fp,FP201511,60)
-
-arg.fp.by.n.fp.sql = $(call to.list,$(call single.quote,$(call arg.fp.by.n.fp,$(1),$(2))))
 
 # macros for use within recipes.  Assumes 2 param file naming format:  emp0-ENGR-FP201511.xls
 
 arg.fp.by.n.fy = $(call fp.by.n.fy,$(call arg.time,$(1)),$(2))
 arg.fp.by.n.fp = $(call fp.by.n.fp,$(call arg.time,$(1)),$(2))
+arg.fy.by.n.fy = $(call fy.by.n.fy,$(call arg.time,$(1)),$(2))
+
 arg.fp.by.n.fy.list = $(call to.list,$(call arg.fp.by.n.fy,$(1),$(2)))
 arg.fp.by.n.fp.list = $(call to.list,$(call arg.fp.by.n.fp,$(1),$(2)))
+arg.fy.by.n.fy.list = $(call to.list,$(call arg.fy.by.n.fy,$(1),$(2)))
+
+arg.fp.by.n.fp.sql = $(call to.list,$(call single.quote,$(call arg.fp.by.n.fp,$(1),$(2))))
+arg.fy.by.n.fy.sql = $(call to.list,$(call single.quote,$(call arg.fy.by.n.fy,$(1),$(2))))
 
 arg.fp.by.5.fy  = $(call fp.by.n.fy,$(call arg.time,$(1)),5)
 arg.fp.by.12.fp = $(call fp.by.n.fp,$(call arg.time,$(1)),12)
+
 arg.fp.by.5.fy.list  = $(call to.list,$(call arg.fp.by.5.fy,$(1)))
 arg.fp.by.12.fp.list = $(call to.list,$(call arg.fp.by.12.fp,$(1)))
 
@@ -167,12 +176,13 @@ arg.fp.by.12.fp.list = $(call to.list,$(call arg.fp.by.12.fp,$(1)))
 window.prev.5.fp.by.fy  := $(call fp.by.n.fy,FP$(prev.fp),5)
 window.prev.3.fp.by.fp  := $(call fp.by.n.fp,FP$(prev.fp),3)
 window.prev.12.fp.by.fp := $(call fp.by.n.fp,FP$(prev.fp),12)
+window.curr.4.fy.by.fy :=  $(call fy.by.n.fy,FY$(curr.fy),4)
 
 convert.fp.to.words  = $(call calc.fpname,$(call pick.fp,$(1))) $(call calc.cy,$(call pick.fp,$(1)))
 
 curr.fp.in.words := $(call convert.fp.to.words,FP$(curr.fp))
 
-time.vars := curr.yearmo curr.year curr.mo curr.fy curr.fp curr.fp.in.words prev.yearmo prev.year prev.mo prev.fy prev.fp 
+time.vars := curr.yearmo curr.year curr.mo curr.fy curr.fp curr.fp.in.words prev.yearmo prev.year prev.mo prev.fy prev.fp next.fy window.curr.4.fy.by.fy
 
 show-time.title := Show time.vars available in makefile
 show-time:
@@ -182,6 +192,7 @@ show-time:
 	@echo SAMPLE CALLS for use Makefile header
 	@echo window.prev.5.fp.by.fy  := $$\(call fp.by.n.fy,FP$$\(prev.fp\),5\)
 	@echo window.prev.3.fp.by.fp  := $$\(call fp.by.n.fp,FP$$\(prev.fp\),3\)
+	@echo window.4.fy.by.fy  := $$\(call fy.by.n.fy,FY$$\(curr.fy\),4\)
 	@echo $$\(foreach period,$$\(call fp.by.n.fp,FP$$\(prev.fp\),6\),emp0-ENGR-$$\(period\).xls\)
 	@echo 
 	@echo SAMPLE CALLS for use in recipes.
@@ -189,5 +200,5 @@ show-time:
 	@echo --title-34225=\"Payroll - $$\(call convert.fp.to.words,$$\(call arg.time,$$\(@\)\)\)\"
 	@echo --fiscal-period-32415=$$\(call arg.time,$$\(@\)\)
 	@echo --fiscal-period-30302=$$\(call arg.fp.by.n.fp.list,$$\(@\),12\)
-	@echo --fiscal-year-32488=$$\(call arg.fp.by.n.fy.list,$$\(@\),5\)
+	@echo --fiscal-year-32488=$$\(call arg.fy.by.n.fy.list,$$\(@\),5\)
 	@echo 
