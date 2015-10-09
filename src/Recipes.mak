@@ -10,6 +10,7 @@
 comma := ,
 empty :=
 space := $(empty) $(empty)
+quote := ''
 
 # new line macro.  Used like $(\n) and drops a new line into the recipe
 # cool for using $(foreach) to generate arguments like:
