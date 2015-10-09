@@ -130,8 +130,8 @@ calc.n.mo.by.mo = $(foreach mo,$(call calc.seq,$(2)),$(call seq.to.yearmo,$(call
 
 # given fiscal period, return list of new fiscal periods
 
-fp.by.n.fy = $(call map,insert.fp,$(call calc.n.mo.by.yr,$(call pick.fp,$(1)),$(2)))
-fp.by.n.fp = $(call map,insert.fp,$(call calc.n.mo.by.mo,$(call pick.fp,$(1)),$(2)))
+fp.by.n.fy = $(sort $(call map,insert.fp,$(call calc.n.mo.by.yr,$(call pick.fp,$(1)),$(2))))
+fp.by.n.fp = $(sort $(call map,insert.fp,$(call calc.n.mo.by.mo,$(call pick.fp,$(1)),$(2))))
 
 #ex.fp.by.n.fy := $(call fp.by.n.fy,FP201511,5)
 #ex.fp.by.n.fp := $(call fp.by.n.fp,FP201511,60)
