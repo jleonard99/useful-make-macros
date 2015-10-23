@@ -138,15 +138,9 @@ calc.n.mo.by.mo = $(foreach mo,$(call calc.seq,$(2)),$(call seq.to.yearmo,$(call
 
 # given fiscal period, return list of new fiscal periods
 
-<<<<<<< HEAD
-fp.by.n.fy = $(sort $(call map,insert.fp,$(call calc.n.mo.by.yr,$(call pick.fp,$(1)),$(2))))
-fp.by.n.fp = $(sort $(call map,insert.fp,$(call calc.n.mo.by.mo,$(call pick.fp,$(1)),$(2))))
-=======
-fp.by.n.fy = $(call map,prepend.fp,$(call calc.n.mo.by.yr,$(call pick.fp,$(1)),$(2)))
-fp.by.n.fp = $(call map,prepend.fp,$(call calc.n.mo.by.mo,$(call pick.fp,$(1)),$(2)))
-
-fy.by.n.fy = $(call map,prepend.fy,$(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call pick.fy,$(1)),$(year))))
->>>>>>> 5c08c7e49472673f8171d817d0c82598cd12a35c
+fp.by.n.fy = $(sort $(call map,prepend.fp,$(call calc.n.mo.by.yr,$(call pick.fp,$(1)),$(2))))
+fp.by.n.fp = $(sort $(call map,prepend.fp,$(call calc.n.mo.by.mo,$(call pick.fp,$(1)),$(2))))
+fy.by.n.fy = $(sort $(call map,prepend.fy,$(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call pick.fy,$(1)),$(year)))))
 
 #ex.fp.by.n.fy := $(call fp.by.n.fy,FP201511,5)
 #ex.fp.by.n.fp := $(call fp.by.n.fp,FP201511,60)
@@ -199,6 +193,7 @@ show-time:
 	@echo window.prev.3.fp.by.fp  := $$\(call fp.by.n.fp,FP$$\(prev.fp\),3\)
 	@echo window.4.fy.by.fy  := $$\(call fy.by.n.fy,FY$$\(curr.fy\),4\)
 	@echo $$\(foreach period,$$\(call fp.by.n.fp,FP$$\(prev.fp\),6\),emp0-ENGR-$$\(period\).xls\)
+	@echo As SQL in makefile: AND FY_CODE IN \($$\(call arg.fy.by.n.fy.sql,$$\(@\),5\)\)
 	@echo 
 	@echo SAMPLE CALLS for use in recipes.
 	@echo --dept-abbr-30010=$$\(call arg.unit,$$\(@\)\)
