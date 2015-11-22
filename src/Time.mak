@@ -23,10 +23,10 @@ arg.term = $(word 3,$(subst ., ,$(subst -, ,$(1))))
 arg.fy = $(call pick.fy,$(call arg.time,$(1)))
 arg.fp = $(call pick.fp,$(call arg.time,$(1)))
 
-arg.1 = $(word 1,$(subst ., ,$(subst -, ,$(1))))
-arg.2 = $(word 2,$(subst ., ,$(subst -, ,$(1))))
-arg.3 = $(word 3,$(subst ., ,$(subst -, ,$(1))))
-arg.4 = $(word 4,$(subst ., ,$(subst -, ,$(1))))
+arg.1 = $(word 1,$(subst -, ,$(firstword $(subst ., ,$(1)))))
+arg.2 = $(word 2,$(subst -, ,$(firstword $(subst ., ,$(1)))))
+arg.3 = $(word 3,$(subst -, ,$(firstword $(subst ., ,$(1)))))
+arg.4 = $(word 4,$(subst -, ,$(firstword $(subst ., ,$(1)))))
 
 
 # pre-pend strings to yearmo stuff
