@@ -16,6 +16,8 @@ calc.cy = $(if $(findstring $(call substr,$(1),5,6),07 08 09 10 11 12),$(call su
 pick.fy = $(call substr,$(1),3,6)
 pick.fp = $(call substr,$(1),3,8)
 
+# Named pieces of filename arguments
+#
 arg.base = $(word 1,$(subst ., ,$(subst -, ,$(1))))
 arg.unit = $(word 2,$(subst ., ,$(subst -, ,$(1))))
 arg.time = $(word 3,$(subst ., ,$(subst -, ,$(1))))
@@ -23,10 +25,18 @@ arg.term = $(word 3,$(subst ., ,$(subst -, ,$(1))))
 arg.fy = $(call pick.fy,$(call arg.time,$(1)))
 arg.fp = $(call pick.fp,$(call arg.time,$(1)))
 
-arg.1 = $(word 1,$(subst -, ,$(firstword $(subst ., ,$(1)))))
-arg.2 = $(word 2,$(subst -, ,$(firstword $(subst ., ,$(1)))))
-arg.3 = $(word 3,$(subst -, ,$(firstword $(subst ., ,$(1)))))
-arg.4 = $(word 4,$(subst -, ,$(firstword $(subst ., ,$(1)))))
+# These are designed to parse pieces of file names.  The file extension (.xls) is dropped.
+# arguments are numbered from 1 to n, and are pulled from the base file name separated with "-".
+# an extra argument is optional - a default value if an argument is missing/empty.
+# For example:  fac0-ENGR-FY2016.xls  arg.1->fac0, arg.2->ENGR arg.3->FY2016  arg.4 returns empty.
+#
+# ex.  $(call arg.3,$(@),FY2016)  or   $(call arg.4,$(@),3)
+
+arg.1 = $(firstword $(word 1,$(subst -, ,$(firstword $(subst ., ,$(1))))) $(2))
+arg.2 = $(firstword $(word 2,$(subst -, ,$(firstword $(subst ., ,$(1))))) $(2))
+arg.3 = $(firstword $(word 3,$(subst -, ,$(firstword $(subst ., ,$(1))))) $(2))
+arg.4 = $(firstword $(word 4,$(subst -, ,$(firstword $(subst ., ,$(1))))) $(2))
+arg.n = $(firstword $(word $(1),$(subst -, ,$(firstword $(subst ., ,$(2))))) $(3))
 
 
 # pre-pend strings to yearmo stuff
