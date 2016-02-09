@@ -13,11 +13,14 @@ calc.mo = $(call substr,$(1),5,6)
 calc.fy = $(if $(findstring $(call substr,$(1),5,6),07 08 09 10 11 12),$(call inc,$(call substr,$(1),1,4)),$(call substr,$(1),1,4))
 calc.cy = $(if $(findstring $(call substr,$(1),5,6),07 08 09 10 11 12),$(call substr,$(1),1,4),$(call dec,$(call substr,$(1),1,4)))
 
+time.style = $(if $(findstring $(call substr,$(1),1,2),FP),fiscal-period,$(if $(findstring $(call substr,$(1),1,2),FY),fiscal-year,term-code))
+
 pick.fy = $(call substr,$(1),3,6)
 pick.fp = $(call substr,$(1),3,8)
 
 # Named pieces of filename arguments
 #
+arg = $(word $(2),$(subst ., ,$(subst -, ,$(1))))
 arg.base = $(word 1,$(subst ., ,$(subst -, ,$(1))))
 arg.unit = $(word 2,$(subst ., ,$(subst -, ,$(1))))
 arg.time = $(word 3,$(subst ., ,$(subst -, ,$(1))))
@@ -212,4 +215,5 @@ show-time:
 	@echo --fiscal-period-32415=$$\(call arg.time,$$\(@\)\)
 	@echo --fiscal-period-30302=$$\(call arg.fp.by.n.fp.list,$$\(@\),12\)
 	@echo --fiscal-year-32488=$$\(call arg.fy.by.n.fy.list,$$\(@\),5\)
+	@echo --$$\(call time.style,$$\(call arg.time,$$\(@\)\)-32100=$$\(call arg.time,$$\(@\)\)
 	@echo 
