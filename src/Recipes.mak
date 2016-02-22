@@ -124,7 +124,7 @@ define recipe-rnw-to-r
 endef
 
 define recipe-r-to-rdata
-	@echo [usefl] Storing Rdata file: $(@) using $(word 1,$(^))
+	@echo [usefl] Storing Rdata file: $(@)
 	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 1>$(NULL)
 endef
 
