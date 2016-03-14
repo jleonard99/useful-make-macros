@@ -28,6 +28,8 @@ arg.term = $(word 3,$(subst ., ,$(subst -, ,$(1))))
 arg.fy = $(call pick.fy,$(call arg.time,$(1)))
 arg.fp = $(call pick.fp,$(call arg.time,$(1)))
 
+basename = $(firstword $(subst ., ,$(1)))
+
 # These are designed to parse pieces of file names.  The file extension (.xls) is dropped.
 # arguments are numbered from 1 to n, and are pulled from the base file name separated with "-".
 # an extra argument is optional - a default value if an argument is missing/empty.
@@ -39,7 +41,7 @@ arg.1 = $(firstword $(word 1,$(subst -, ,$(firstword $(subst ., ,$(1))))) $(2))
 arg.2 = $(firstword $(word 2,$(subst -, ,$(firstword $(subst ., ,$(1))))) $(2))
 arg.3 = $(firstword $(word 3,$(subst -, ,$(firstword $(subst ., ,$(1))))) $(2))
 arg.4 = $(firstword $(word 4,$(subst -, ,$(firstword $(subst ., ,$(1))))) $(2))
-arg.n = $(firstword $(word $(1),$(subst -, ,$(firstword $(subst ., ,$(2))))) $(3))
+arg.n = $(firstword $(word $(2),$(subst -, ,$(firstword $(subst ., ,$(1))))) $(3))
 
 
 # pre-pend strings to yearmo stuff
