@@ -13,9 +13,11 @@ calc.mo = $(call substr,$(1),5,6)
 calc.fy = $(if $(findstring $(call substr,$(1),5,6),07 08 09 10 11 12),$(call inc,$(call substr,$(1),1,4)),$(call substr,$(1),1,4))
 calc.cy = $(if $(findstring $(call substr,$(1),5,6),07 08 09 10 11 12),$(call substr,$(1),1,4),$(call dec,$(call substr,$(1),1,4)))
 
-time.style = $(if $(findstring $(call substr,$(1),1,2),FP),fiscal-period,$(if $(findstring $(call substr,$(1),1,2),FY),fiscal-year,term-code))
+time.style = $(if $(findstring $(call substr,$(1),1,2),FP),fiscal-period,$(if $(findstring $(call substr,$(1),1,2),FY),fiscal-year,$(if $(findstring $(call substr,$(1),1,2),CY),calendar-year,term-code)))
 
+pick.yr.type = $(call substr,$(1),1,2)  # assumes year field starts with 2-character code  FY CY CP FP
 pick.fy = $(call substr,$(1),3,6)
+pick.cy = $(call substr,$(1),3,6)
 pick.fp = $(call substr,$(1),3,8)
 
 # Named pieces of filename arguments
@@ -48,6 +50,7 @@ arg.n = $(firstword $(word $(2),$(subst -, ,$(firstword $(subst ., ,$(1))))) $(3
 prepend.fp = FP$(1)
 prepend.fy = FY$(1)
 prepend.cp = CP$(1)
+prepend.cy = CY$(1)
 prepend.time = time-$(1)
 prepend.unit = unit-$(1)
 
@@ -110,6 +113,8 @@ curr.year := $(call calc.year,$(curr.yearmo))
 curr.mo := $(call calc.mo,$(curr.yearmo))
 curr.fm := $(call calc.fm,$(curr.yearmo))
 curr.fp := $(call convert.cp.to.fp,$(curr.yearmo))
+curr.cy := $(call calc.year,$(curr.yearmo))
+
 
 # previous time returns YYYYMM from x months ago
 prev.time = $(shell date.exe +%Y%m --date="$(1)month")
@@ -119,6 +124,7 @@ prev.time = $(shell date.exe +%Y%m --date="$(1)month")
 ## previous month: ex. 201505
 prev.yearmo := $(call memoize,prev.time,-1)
 prev.year := $(call calc.year,$(prev.yearmo))
+prev.cy := $(call calc.year,$(prev.yearmo))
 prev.mo := $(call calc.mo,$(prev.yearmo))
 prev.fm := $(call calc.fm,$(prev.yearmo))
 prev.fp := $(call calc.fy,$(prev.yearmo))$(call calc.fm,$(prev.yearmo))
@@ -126,6 +132,7 @@ prev.fp := $(call calc.fy,$(prev.yearmo))$(call calc.fm,$(prev.yearmo))
 curr.fy := $(call calc.fy,$(curr.yearmo))
 prev.fy := $(call dec,$(curr.fy))
 next.fy := $(call inc,$(curr.fy))
+next.cy := $(call inc,$(curr.cy))
 
 ## core calculators
 
@@ -157,6 +164,9 @@ calc.n.mo.by.mo = $(foreach mo,$(call calc.seq,$(2)),$(call seq.to.yearmo,$(call
 fp.by.n.fy = $(sort $(call map,prepend.fp,$(call calc.n.mo.by.yr,$(call pick.fp,$(1)),$(2))))
 fp.by.n.fp = $(sort $(call map,prepend.fp,$(call calc.n.mo.by.mo,$(call pick.fp,$(1)),$(2))))
 fy.by.n.fy = $(sort $(call map,prepend.fy,$(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call pick.fy,$(1)),$(year)))))
+cy.by.n.cy = $(sort $(call map,prepend.cy,$(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call pick.cy,$(1)),$(year)))))
+
+yr.by.n.yr = $(sort $(foreach year,$(call calc.seq,$(2)),$(subst $(space),,$(call pick.yr.type,$(1))$(call subtract,$(call pick.cy,$(1)),$(year)))))
 
 #ex.fp.by.n.fy := $(call fp.by.n.fy,FP201511,5)
 #ex.fp.by.n.fp := $(call fp.by.n.fp,FP201511,60)
@@ -166,13 +176,18 @@ fy.by.n.fy = $(sort $(call map,prepend.fy,$(foreach year,$(call calc.seq,$(2)),$
 arg.fp.by.n.fy = $(call fp.by.n.fy,$(call arg.time,$(1)),$(2))
 arg.fp.by.n.fp = $(call fp.by.n.fp,$(call arg.time,$(1)),$(2))
 arg.fy.by.n.fy = $(call fy.by.n.fy,$(call arg.time,$(1)),$(2))
+arg.cy.by.n.cy = $(call cy.by.n.cy,$(call arg.time,$(1)),$(2))
+arg.yr.by.n.yr = $(call yr.by.n.yr,$(call arg.time,$(1)),$(2))
 
 arg.fp.by.n.fy.list = $(call to.list,$(call arg.fp.by.n.fy,$(1),$(2)))
 arg.fp.by.n.fp.list = $(call to.list,$(call arg.fp.by.n.fp,$(1),$(2)))
 arg.fy.by.n.fy.list = $(call to.list,$(call arg.fy.by.n.fy,$(1),$(2)))
+arg.cy.by.n.cy.list = $(call to.list,$(call arg.cy.by.n.cy,$(1),$(2)))
+arg.yr.by.n.yr.list = $(call to.list,$(call arg.yr.by.n.yr,$(1),$(2)))
 
 arg.fp.by.n.fp.sql = $(call to.list,$(call single.quote,$(call arg.fp.by.n.fp,$(1),$(2))))
 arg.fy.by.n.fy.sql = $(call to.list,$(call single.quote,$(call arg.fy.by.n.fy,$(1),$(2))))
+arg.cy.by.n.cy.sql = $(call to.list,$(call single.quote,$(call arg.cy.by.n.cy,$(1),$(2))))
 
 arg.fp.by.5.fy  = $(call fp.by.n.fy,$(call arg.time,$(1)),5)
 arg.fp.by.12.fp = $(call fp.by.n.fp,$(call arg.time,$(1)),12)
