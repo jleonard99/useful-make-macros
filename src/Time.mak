@@ -14,6 +14,7 @@ calc.fy = $(if $(findstring $(call substr,$(1),5,6),07 08 09 10 11 12),$(call in
 calc.cy = $(if $(findstring $(call substr,$(1),5,6),07 08 09 10 11 12),$(call substr,$(1),1,4),$(call dec,$(call substr,$(1),1,4)))
 
 time.style = $(if $(findstring $(call substr,$(1),1,2),FP),fiscal-period,$(if $(findstring $(call substr,$(1),1,2),FY),fiscal-year,$(if $(findstring $(call substr,$(1),1,2),CY),calendar-year,term-code)))
+arg.time.style = $(call time.style,$(call arg.time,$(1)))
 
 pick.yr.type = $(call substr,$(1),1,2)  # assumes year field starts with 2-character code  FY CY CP FP
 pick.fy = $(call substr,$(1),3,6)
@@ -229,8 +230,10 @@ show-time:
 	@echo SAMPLE CALLS for use in recipes.
 	@echo --dept-abbr-30010=$$\(call arg.unit,$$\(@\)\)
 	@echo --title-34225=\"Payroll - $$\(call convert.fp.to.words,$$\(call arg.time,$$\(@\)\)\)\"
+	@echo --save-sql-32100=$$\(call basename,$$\(@\)\)-32100.sql 
 	@echo --fiscal-period-32415=$$\(call arg.time,$$\(@\)\)
 	@echo --fiscal-period-30302=$$\(call arg.fp.by.n.fp.list,$$\(@\),12\)
 	@echo --fiscal-year-32488=$$\(call arg.fy.by.n.fy.list,$$\(@\),5\)
-	@echo --$$\(call time.style,$$\(call arg.time,$$\(@\)\)-32100=$$\(call arg.time,$$\(@\)\)
-	@echo 
+	@echo --calendar-year-32488=$$\(call arg.cy.by.n.cy.list,$$\(@\),5\)
+	@echo --$$\(call time.style,$$\(call arg.time,$$\(@\)\)\)-32100=$$\(call arg.time,$$\(@\)\)
+	@echo --$$\(call arg.time.style,$$\(@\)\)-32100=$$\(call arg.yr.by.n.yr.list,$$\(@\),5\)
