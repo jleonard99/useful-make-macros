@@ -1,0 +1,116 @@
+\usepackage{alltt}
+
+% for xelatex
+\usepackage{fontspec}
+\usepackage{tocloft}
+
+
+\usepackage[sc]{mathpazo}
+\usepackage{geometry,float}
+\geometry{verbose,nomarginpar,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{url}
+
+%\usepackage[unicode=true,pdfusetitle,
+% bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+% breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+% {hyperref}
+%\hypersetup{pdfstartview={XYZ null null 1}}
+%\usepackage{breakurl}
+
+%\usepackage{pifont}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+\usepackage{upquote}
+\usepackage{verbatim}
+
+\usepackage{caption}
+\usepackage{natbib}
+%\usepackage{times}
+\usepackage{setspace}
+\usepackage{array}
+\usepackage{booktabs,ctable,tabularx,multirow,longtable}
+\usepackage[section]{placeins}
+\usepackage{fancyvrb,pdfpages,appendix}
+\usepackage{rotating}
+\usepackage[mdyyyy,hhmmss]{datetime}
+
+\newcommand{\orgabbr}{orgabbr}
+\newcommand{\orgshortname}{orgshortname}
+\newcommand{\orglongname}{orglongname}
+\newcommand{\orgtype}{orgtype}
+\newcommand{\asofday}{\today}
+
+
+\usepackage{fancyhdr}
+%%\fancypagestyle{default}{
+  \fancyhf{}% Clear header/footer
+  \fancyhead[L]{\nouppercase{\leftmark} - \orgshortname}% Left header
+  \fancyhead[R]{\today}% Right header
+  \fancyfoot[L]{\@title}% Left footer
+  \fancyfoot[C]{\thepage}% Right footer
+  \fancyfoot[R]{\@author}% Right footer
+  \renewcommand{\headrulewidth}{0.4pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+%%}
+
+\pagestyle{fancy}
+
+\fancypagestyle{plain}{
+  \fancyhf{}% Clear header/footer
+  \fancyhead[L]{\includegraphics[width=6.5in]{masthead_COE_final.png}}% Left header
+%%  \fancyhead[R]{\@title\\ \@author\\ \today }% Right header
+  \fancyfoot[L]{\@title}% Left footer
+  \fancyfoot[C]{\thepage}% Right footer
+  \fancyfoot[R]{\@author}% Right footer
+  \renewcommand{\headrulewidth}{0.0pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+}
+
+%\let\origdoublepage\cleardoublepage
+%\newcommand{\clearemptydoublepage}{%
+%  \clearpage
+%  {\pagestyle{empty}\origdoublepage}%
+%}
+%\let\cleardoublepage\clearemptydoublepage
+
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+
+\usepackage[compact]{titlesec}
+%% http://tug.ctan.org/tex-archive/macros/latex/contrib/titlesec/titlesec.pdf
+%%\titleformat{\section}[<shape>]{<format>}{<label>}{<sep>}{<before-code>}[<after-code>]
+%%\titleformat{\section}[hang]{\Huge\bfseries\center}{\thesection}{20pt}{y}[z]
+%%\titleformat{\section}[block]{\huge\bfseries\center}{}{0pt}{\vrule height\dimexpr\ht\strutbox+6pt\relax width 0pt depth 0pt}
+
+\titleformat{\chapter}[block]{\huge\bfseries}{}{0pt}{\filcenter}[\large\orglongname~---~as of \asofday]
+\titlespacing{\chapter}{0pt}{0pt}{12pt}
+
+%\usepackage{showframe}
+%\usepackage{lipsum}
+
+\makeatletter
+\newcommand*{\toccontents}{\@starttoc{toc}}
+\newcommand*{\lotcontents}{\@starttoc{lot}}
+\makeatother
+
+\setlength{\parskip}{3pt plus3pt minus3pt}
+
+\setmainfont{Calibri}
+
+\setcounter{tocdepth}{0}%
+\setlength{\cftbeforechapskip}{0pt}%
+\renewcommand*\thesection{\arabic{section}}
+
+
+\usepackage{enumitem}
+\setlist[itemize]{itemsep=-1.0\parsep}
+
+% \setromanfont{Times New Roman}
+% \setsansfont{Arial}
+% \setmonofont[Color={0019D4}]{Courier New}
+
+\usepackage{subcaption}
+
+\usepackage[framemethod=tikz]{mdframed}
+\mdfsetup{linewidth=1pt,roundcorner=10pt,skipbelow=30pt,skipabove=0pt}

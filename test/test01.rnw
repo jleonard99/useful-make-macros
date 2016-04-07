@@ -1,0 +1,90 @@
+\documentclass[10pt,twoside,openright]{report}
+\usepackage{databrief}
+<<label=setup,echo=FALSE>>=
+# add R setup code here.  
+#if(!exists("build.file")) source( 'admis0-GIT-FY2017.Rparams' )
+source( 'molten-utils.R' )
+source( 'report-utils.R' )
+source( 'tile-utils.R')
+
+graphdev = "png"
+graphdpi = 600
+options(width=90)
+default.tabcolsep = "4pt"
+default.table.font.size = "footnotesize"
+
+opts_chunk$set( echo=FALSE,results="asis",size=default.table.font.size,dev=graphdev,dpi=graphdpi )
+opts_chunk$set(fig.height=1.0,fig.width=7,fig.align="center")
+
+unit.abbr = "ENGR"
+unit.unittype = "division"
+unit.shortname = "Engineering"
+unit.longname = "College of Engineering"
+
+orgabbr = unit.abbr
+orgtype = unit.unittype
+orgshortname = unit.shortname
+orglongname = unit.longname
+
+@
+
+\title{Test of tiles}
+\author{John Leonard}
+
+\renewcommand{\orgtype}{\Sexpr{orgtype}}
+\renewcommand{\orgabbr}{\Sexpr{orgabbr}}
+\renewcommand{\orgshortname}{\Sexpr{orgshortname}}
+\renewcommand{\orglongname}{\Sexpr{orglongname}}
+%%\renewcommand{\asofday}{\Sexpr{day_of_snapshot}}
+
+\begin{document}
+
+% ===============================================================================================
+
+\chapter{Demonstration of various tile sequences}
+
+
+<<>>=
+p0 = TileSquare150x150Block("Applying","Phase")
+p1 = TileSquare150x150Block("30,123","Applications")
+p2 = TileSquare150x150Block("41.5%","Applied.Women")
+p3 = TileSquare150x150Block("15,234","Domestic","applicants")
+p4 = TileSquare150x150Block("$15.98M","Dollars")
+p5 = TileSquare150x150Block("398:1","Advsr:Stu Ratio")
+blank = TileSquare150x150Blank()
+@
+
+<<>>=
+grid.arrange(p0,ncol=1)
+@
+
+<<>>=
+grid.arrange(blank,p0,p5,blank,ncol=4)
+@
+
+<<>>=
+grid.arrange(blank,p2,p4,p0,blank,ncol=5)
+@
+
+<<>>=
+grid.arrange(p0,p1,p2,p3,ncol=4)
+@
+
+<<>>=
+grid.arrange(p0,p3,p2,p4,p5,ncol=5)
+@
+
+<<>>=
+grid.arrange(p0,p3,p2,p4,p5,p1,ncol=6)
+@
+
+<<>>=
+p0 = TileSquare150x150Block("$14.98M","Monthly payroll","(all employees)")
+p1 = TileSquare150x150Text01("Range","Low: 15","Mid: 20","Max:23","Scary, eh?")
+p2 = TileSquare150x150Text02("$1.75B","Combined exp. across all busi- ness units at Tech last year")
+p3 = TileSquare150x150Text03()
+grid.arrange(p0,p1,p2,p3,ncol=4)
+@
+
+\end{document}
+
