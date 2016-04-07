@@ -1,0 +1,485 @@
+\documentclass[11pt]{article}
+\usepackage{default}
+
+<<label=setup,echo=FALSE>>=
+# add R setup code here.  
+@
+
+\title{Reporting utilities}
+\author{John Leonard}
+
+\begin{document}
+
+% ===============================================================================================
+% Front matter
+% ===============================================================================================
+\maketitle
+
+
+\section{function writeToFile}
+<<echo=T>>=
+fileCount = 100
+writeToFile = function( gg,width=6.5,height=6,section="figures" ){
+# png(filename=output.png,width=9.25, height=5.30,units="in", pointsize=14, res=200, bg="transparent" )
+output.pdf = sprintf("%s-%s-%03i.pdf",params[['base.name']],section,fileCount)
+.GlobalEnv$fileCount = .GlobalEnv$fileCount + 1
+pdf(file=output.pdf,width=width, height=height, pointsize=14, bg="transparent" )
+print(gg)
+dev.off()
+return(output.pdf)
+}
+
+graphdev = "png"
+graphdpi = 300
+options(width=100)
+opts_chunk$set( echo=FALSE,results="asis",size="scriptsize",dev=graphdev,dpi=graphdpi,fig.height=3 )
+
+format.number = function(value,pre="",post="",digits=0,multiply.by=1){
+   paste(pre,formatC(value*multiply.by,format="f",digits=digits,big.mark=",",zero.print=T),post,sep="")
+}
+
+as.number0 = function(value){ format.number(value,digits=0,pre="") }
+as.number1 = function(value){ format.number(value,digits=1,pre="") }
+as.number2 = function(value){ format.number(value,digits=2,pre="") }
+as.dollar = function(value){ format.number(value,digits=0,pre="$") }
+as.Kdollar = function(value){ format.number(value,digits=2,multiply.by=1/1000,pre="$",post="K") }
+as.Mdollar = function(value){ format.number(value,digits=2,multiply.by=1/1000000,pre="$",post="M") }
+as.percent1 = function(value){ format.number(value,multiply.by=100,digits=1,post="%") }
+as.percent0 = function(value){ format.number(value,multiply.by=100,digits=0,post="%") }
+
+
+@
+
+<<echo=T>>=
+no_map_margins <- theme(
+ axis.line =         element_blank(),
+ axis.text.x =       element_blank(),
+ axis.text.y =       element_blank(),
+ axis.ticks =        element_blank(),
+ axis.title.x =      element_blank(),
+ axis.title.y =      element_blank(),
+ axis.line =         element_blank(),
+ axis.text.x =       element_blank(),
+ axis.text.y =       element_blank(),
+ axis.ticks =        element_blank(),
+ axis.title.x =      element_blank(),
+ axis.title.y =      element_blank(),
+ axis.ticks.length = unit(0.01, "cm"),
+# axis.text.margin = unit(0.01, "cm"),
+ axis.text = element_text(margin=margin(0.01,0.01,0.01,0.01,"cm")),
+ panel.background =  element_blank(),
+ panel.border =      element_blank(),
+ panel.grid.major =  element_blank(),
+ panel.grid.minor =  element_blank(),
+ panel.border=       element_blank(),
+ plot.background =   element_blank(),
+ plot.title =        element_blank(),
+ plot.margin =       unit(c(0.001, 0.001, 0.001, 0.001), "lines"),
+ legend.position="none"
+)
+
+@
+
+<<echo=T>>=
+### The following code comes from file "report-utils.rnw"
+### Make any changes to this original file!
+@
+
+\section{function prettySum}
+<<echo=T>>=
+prettySum = function(x,digits=0,...){
+#  prettyNum(round(sum(x),digits),preserve.width="common",big.mark=",",...)
+  format(round(sum(x),digits),big.mark=",",...)
+}
+@
+
+\section{function numericSort}
+Returns a sorted data frame converting columnId to numeric first.
+<<echo=T>>=
+numericSort = function(tab,columnID,decreasing=TRUE,has.totals=T){
+  range = c(1:dim(tab)[1])
+  tab[sort.list(as.numeric(gsub(",","",trim(tab[range,columnID]))),decreasing=decreasing),]
+  if(has.totals) {
+    range = c(1:dim(tab)[1]-1)
+    tab[c(sort.list(as.numeric(gsub(",","",trim(tab[range,columnID]))),decreasing=decreasing),dim(tab)[1]),]
+  }
+}
+@
+
+
+\section{showTabDocumentation}
+
+<<echo=T>>=
+
+showTabDocumentation = function ( filename ){
+
+  name =  gsub("_","\\\\_",filename)
+  cleanname = gsub("_","",filename)
+
+  cat("{\\small\n")
+  cat("\\begin{spacing}{1.0}\n")
+  cat("\\begin{center}\n")
+  cat("\\begin{longtable}{m{4.5 cm}m{9 cm}}\n")
+  cat("\\caption{",name,"}%\n",sep="")
+  cat("\\\\ \\hline\n")
+  cat("Column & Description \\\\ \\hline\n")
+  cat("\\endfirsthead")
+  cat("\\multicolumn{2}{c}%\n")
+  cat("{{\\bfseries \\tablename\\ \\thetable{} -- continued from previous page}} %\n")
+  cat("\\\\ \\hline\n")
+  cat("Column & Description \\\\ \\hline\n")
+  cat("\\endhead\n")
+  cat("\\hline \\multicolumn{2}{ r }{{Continued on next page}} \\\\ \\hline\n")
+  cat("\\endfoot\n")
+  cat("\\hline\n")
+  cat("\\endlastfoot\n")
+
+  cat("\\input{",filename,"-c}\n\n",sep="")
+
+  cat("\\label{tab:",cleanname,"}\n",sep="")
+  cat("\\end{longtable}\n")
+  cat("\\end{center}\n")
+  cat("\\end{spacing}\n")
+  cat("}\n")
+}
+@
+
+\section{showSQLfile}
+
+<<echo=T>>=
+showSQLfile = function( file ) {
+  name =  gsub("_","\\\\_",file)
+  cat("\\fvset{fontsize=\\scriptsize,frame=lines,fontshape=sl,numbers=left,label=SQL to create ",name,"}\n\n",sep="")
+  cat("\\VerbatimInput{",file,"}\n\n",sep="")
+}
+
+@
+
+
+\section{termToWords}
+<<echo=TRUE>>=
+termToWords = function( term,format=0 ){
+  if(format==1) {
+    termname = list('08'='Fall','02'='Spr','05'='Sum')
+    temp = paste(substr(term[which(substr(term,1,2)=='20')],3,4),'-',termname[substr(term[which(substr(term,1,2)=='20')],5,6)],sep="")
+  } else {
+    termname = list('08'='Fall','02'='Spring','05'='Summer')
+    temp = paste(termname[substr(term[which(substr(term,1,2)=='20')],5,6)],substr(term,1,4))
+  }
+  temp
+}
+@
+
+\section{fiscalToFall}
+<<echo=TRUE>>=
+fiscalToFall = function( fy.code,format=0 ){
+  fy = paste("Fall.",sprintf("%02.f",as.numeric(substr(fy.code,5,6))-1),sep="")
+  fy
+}
+@
+
+
+\section{tableTool.Init}
+
+<<echo=T>>=
+tableTool.tableList = list()
+@
+
+\section{tableTool.append}
+
+<<echo=T>>=
+tableTool.append = function( table=NULL,tag="",caption="",align=NULL,hline.after=NULL,include.rownames=NULL){
+if (tag=="") {tag = paste("table",length(.GlobalEnv$tableTool.tableList)+1,sep="")}
+.GlobalEnv$tableTool.tableList[[tag]] = list(table=table,tag=tag,caption=caption,
+  align=align,
+  hline.after=hline.after,
+  include.rownames=include.rownames
+)
+tag
+}
+@
+
+\section{tableTool.soutput}
+
+<<echo=T>>=
+tableTool.soutput = function( tag ){
+cat("%% ",tag," %%\n")
+.GlobalEnv$tableTool.tableList[[tag]]$table
+}
+@
+
+
+\section{tableDump}
+<<echo=T>>=
+
+tableDump = function(pt,sort=T,commas=T,cleanNames=T,rename=T,rename.termcodes=T,
+  size="small",caption=NULL,label=NULL,
+  include.rownames=getOption("xtable.include.rownames", FALSE),
+  tabular.environment="longtable",
+  format.args=list(big.mark=",",decimal.mark=".",zero.print=NULL),
+  vadjust.string="\\vadjust{\\vskip 3pt \\vskip 0pt}",
+  midrule.string="\\midrule",
+  digits=0,
+  align=NULL,
+  extra.header="",
+  tabcolsep="6pt",
+  hline.after=c(NULL),
+  vadjust.after=hline.after,
+  first.n.rows=NULL,
+  continued.message = " -- continued from previous page",
+  scalebox=NULL,
+  notes=NULL
+){
+ 
+if(sort){
+sort.column = dim(pt)[2]
+order = T
+range = dim(pt)[1]-1
+sort.order = sort(pt[1:range,sort.column],decreasing=order,index.return=T)$ix
+sort.order = c(sort.order,dim(pt)[1])
+pt = pt[sort.order,]  
+attr(pt,"row.names") = 1:dim(pt)[1]
+}
+
+if(!is.null(first.n.rows)){
+pt = pt[c(1:first.n.rows),]
+}
+
+if(cleanNames){
+names(pt) = gsub("fct_","",names(pt))
+names(pt) = gsub("st_","",names(pt))
+names(pt) = gsub("moe_","",names(pt))
+}
+if(rename){
+names(pt) = gsub("curr_","C.",names(pt))
+names(pt) = gsub("prev_","P.",names(pt))
+names(pt) = gsub("college","coll",names(pt))
+names(pt) = gsub("_major","?",names(pt))
+names(pt) = gsub("hours_passed","hours",names(pt))
+names(pt) = gsub("term_code","term",names(pt))
+}
+if(cleanNames){
+names(pt) = gsub("_",".",names(pt))
+}
+if(rename.termcodes){
+termname = list('08'='Fall','02'='Spr','05'='Sum')
+names(pt)[which(substr(names(pt),1,2)=='20')] = paste(substr(names(pt)[which(substr(names(pt),1,2)=='20')],3,4),'-',termname[substr(names(pt)[which(substr(names(pt),1,2)=='20')],5,6)],sep="")
+}
+
+#if(commas){
+#for(col in names(pt)[1:length(names(pt))]) { 
+#  if(is.numeric(pt[,col])&length(grep("term",col))==0) pt[,col] = formatC(pt[,col],big.mark=",",format="f",digits=ndigits,preserve.width="common")
+#}
+#}
+#if(commas){
+#for(col in names(pt)[1:length(names(pt))]) { 
+#  if(is.numeric(pt[,col])) pt[,col] = formatC(pt[,col],big.mark=",",format="f",digits=digits,preserve.width="common")
+#}
+#}
+
+#pt
+tt.xtable = xtable(pt)
+digits(tt.xtable) = digits
+if(!is.null(attr(pt,"rdimnames"))){
+  align(tt.xtable)[c((dim(pt)[2]-dim(attr(pt,"rdimnames")[[2]])[1]+1):(dim(pt)[2])+1)] = rep("r",dim(attr(pt,"rdimnames")[[2]])[1])
+}
+
+if(is.null(align)) { 
+ align = align(tt.xtable)
+ if (!include.rownames) align = align[2:length(align)]
+ align = paste(align,collapse="")
+}
+
+#names(tt.xtable)[c(1:2)] = c("Course","Title")
+rownames = paste(names(pt),collapse=" & ")
+if (include.rownames) rownames = paste("Row & ",rownames,sep='')
+
+tex.caption="\\caption{}"
+if(length(caption)==1){
+  tex.caption=paste("\\caption{",caption,"}",sep="")
+} else if (length(caption)==2){
+  tex.caption=paste("\\caption[",caption(2),"]{",caption(1),"}")
+} else if (length(caption)==0){
+  tex.caption=""
+}
+
+if(!is.null(label)){
+  label = paste("\\label{",label,"}",sep="")
+}
+
+addtorow = list(
+pos=c(
+  hline.after,
+  vadjust.after,
+  list(-1)),
+command=c(
+  rep(midrule.string,length(hline.after)),
+  rep(vadjust.string,length(vadjust.after)),
+paste(
+"\\multicolumn{",length(names(pt)),"}{c}{\\tablename\\ \\thetable",continued.message,"} \\\\%
+",midrule.string,extra.header,"
+",rownames,"\\\\%
+",midrule.string,"\\endhead%
+",tex.caption,"\\\\
+\\toprule",extra.header,"
+",rownames," \\\\%
+",midrule.string,"\\endfirsthead%
+",midrule.string,"\\endfoot%
+\\bottomrule%
+\\multicolumn{",length(names(pt)),"}{l}{",label,"%
+",notes,"}%
+\\endlastfoot%
+",sep="")
+)
+)
+
+
+cat("\\setlength{\\tabcolsep}{",tabcolsep,"}%\n",sep="")
+
+cat("{\\",size,"
+\\begin{longtable}{",align,"}
+",addtorow$command[length(addtorow$command)],sep="")
+
+print(tt.xtable,
+  only.contents=TRUE,
+  tabular.environment=tabular.environment,
+  include.rownames=include.rownames,
+  include.colnames=F,
+  hline.after=NULL,
+  floating=F,
+  booktabs=T,
+  add.to.row=addtorow,
+  format.args=format.args,
+  size=size,
+  scalebox=scalebox
+)
+
+cat("\\end{longtable}
+}",sep="")
+
+
+ref = tableTool.append(
+  table=format(tt.xtable,big.mark=",",decimal.mark=".",zero.print=FALSE),
+  caption=caption,align=align,hline.after=hline.after,include.rownames=include.rownames)
+}
+@
+
+\section{as.dollars.m}
+
+<<echo=T>>=
+as.dollars.m = function(x){
+  paste("$",formatC(x / 1000000,format="f",digits=1),"M",sep="")
+}
+@
+
+\section{as.dollars.k}
+
+<<echo=T>>=
+as.dollars.k = function(x){
+  paste("$",formatC(x / 1000,format="f",digits=1),"K",sep="")
+}
+@
+
+\section{as.dollars}
+
+<<echo=T>>=
+as.dollars = function(x){
+  paste("$",formatC(x,format="f",digits=0,big.mark=","),"",sep="")
+}
+@
+
+\section{as.fte}
+
+<<echo=T>>=
+as.fte = function(x){
+  paste(formatC(x,format="f",digits=2,big.mark=","),"",sep="")
+}
+@
+
+\section{as.percent}
+
+<<echo=T>>=
+as.percent = function(x,digits=1,zero.print=NULL){
+  paste(formatC(x,format="f",digits=digits,big.mark=",",zero.print=zero.print,drop0trailing=FALSE),"%",sep="")
+}
+@
+
+\section{fixfp}
+
+This function takes a fiscal period character string \verb!FP201004! and converts it into month.year format.
+
+<<echo=T>>=
+fixfp = function( s ) {
+months = c("Jul.","Aug.","Sep.","Oct.","Nov.","Dec.","Jan.","Feb.","Mar.","Apr.","May.","Jun.")
+value=s
+if (substr(s,1,2)=='FP'){
+  mon = as.numeric(substr(s,7,8))
+  diff = 0
+  if (mon <= 6) diff = 1
+  year = substr(as.character(as.numeric(substr(s,3,6))-diff),3,4);
+  value = paste(months[mon],year,sep="")
+}
+value
+}
+@
+
+\section{fixfp4}
+
+This function takes a fiscal period character string \verb!FP201004! and converts it into month.year format.
+
+<<echo=T>>=
+fixfp4 = function( s ) {
+months = c("Jul.","Aug.","Sep.","Oct.","Nov.","Dec.","Jan.","Feb.","Mar.","Apr.","May.","Jun.")
+value=s
+if (substr(s,1,2)=='FP'){
+  mon = as.numeric(substr(s,7,8))
+  diff = 0
+  if (mon <= 6) diff = 1
+  year = as.character(as.numeric(substr(s,3,6))-diff)
+  value = paste(months[mon],year,sep=" ")
+}
+value
+}
+@
+
+\section{wordsfp4}
+
+This function takes a fiscal period character string \verb!FP201004! and converts it into month.year format.
+
+<<echo=T>>=
+wordsfp4 = function( s ) {
+months = c("July","August","September","October","November","December","January","February","March","April","May","June")
+value=s
+if (substr(s,1,2)=='FP'){
+  mon = as.numeric(substr(s,7,8))
+  diff = 0
+  if (mon <= 6) diff = 1
+  year = as.character(as.numeric(substr(s,3,6))-diff)
+  value = paste(months[mon],year,sep=" ")
+}
+value
+}
+@
+
+
+
+\section simpleCap
+
+<<echo=T>>=
+simpleCap <- function(x) {
+  s <- strsplit(x, " ")[[1]]
+  paste(toupper(substring(s, 1,1)), substring(s, 2),
+      sep="", collapse=" ")
+}
+@
+
+\section fixSexpr
+
+<<echo=T>>=
+fixSexpr <- function(s) {
+  gsub("%","\\\\%",s)
+}
+@
+
+\end{document}
+

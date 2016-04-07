@@ -1,0 +1,253 @@
+\documentclass[10pt]{article}
+<<echo=FALSE>>=
+
+#if(!exists('build.file')) { build.file = "" }
+#show.samples = build.file=='tile-utils.tex'
+
+show.samples = FALSE
+
+source("molten-utils.R")
+
+default.bg.color  = "#00274F"      # GT adjusted PMS 539: CMYK 100,51,0,69 Dark blue
+default.border.color  = "#00274F"  # GT adjusted PMS 539: CMYK 100,51,0,69 Dark blue
+ 
+##default.bg.color = "steelblue4"
+default.fg.color = "white"
+##default.border.color = "steelblue4"
+default.font.family = "sans"
+
+default.plot.margin = unit(c(1, 1, -9, -5)*0.05, "cm")
+
+@
+\usepackage{default}
+
+\begin{document}
+
+<<echo=F,eval=TRUE,fig.height=1.5>>=
+
+TileSquare150x150Block = function ( TextId1="24",TextId2="Aliquam",
+    bg.color=default.bg.color,
+    fg.color=default.fg.color,
+    border.color=default.border.color,
+    family=default.font.family,
+    logo=NULL,
+    badge=NULL,
+	  plot.margin=default.plot.margin,
+    show.anchor=FALSE) {
+# Modeled off Windows 8 tile: http://msdn.microsoft.com/en-us/library/windows/apps/hh761491.aspx#TileSquareBlock
+# Color reference: # http://www.cookbook-r.com/Graphs/Colors_%28ggplot2%29/
+  
+# text is aligned from bottom-left bounding box (default is center-center)
+# bounding box is anchored using (x,y)
+d=data.frame(
+    x=c(75,75),
+    y=c(70,45), 
+    size=c(5,2.90),
+    face=c("plain","plain"),
+    label=c(TextId1,TextId2)
+)
+
+# Initialize plot and set scales.  (0,0) is in bottom left, top-right is (150,150), 
+p = ggplot(data=d,mapping=aes(x=x,y=y)) + scale_y_continuous(limits=c(0,150), breaks=NULL) + scale_x_continuous(limits=c(0,150), breaks=NULL) + coord_fixed()
+
+# axes labels (set to blank)
+p = p + theme(axis.title.x = element_blank(), axis.title.y = element_blank(), axis.ticks = element_blank())
+
+# margins
+
+p = p + theme(plot.margin=plot.margin )
+
+# Panel: border, background
+# use >> colors() to view availble colors from R
+p = p + theme(
+           panel.border = element_rect(linetype = "solid",colour=border.color,fill=NA),
+           panel.background=element_rect(fill=bg.color)
+        )
+
+# Content
+#c("plain","bold","italic","bold.italic"c("plain","bold","italic","bold.italic")
+p = p + geom_text(mapping=aes(label=label),size=d$size,colour=fg.color,hjust=0.5,vjust=0,fontface=d$face,family=family)
+
+if (show.anchor) p = p + geom_point(size=0.5)
+
+p
+}
+
+if(show.samples){ TileSquare150x150Block() }
+
+@
+
+
+<<echo=F,eval=TRUE,fig.height=1.5>>=
+
+TileSquare150x150Text01 = function ( HeaderId1="VitAe ligu",TextId1="Vivamus tincidun",TextId2="Vivamus tincidun",TextId3="Vivamus tincidun",
+    bg.color=default.bg.color,
+    fg.color=default.fg.color,
+    border.color=default.border.color,
+    family=default.font.family,
+    logo=NULL,
+    badge=NULL,
+	plot.margin=default.plot.margin,
+    show.anchor=FALSE) {
+# Modeled off Windows 8 tile: http://msdn.microsoft.com/en-us/library/windows/apps/hh761491.aspx#TileSquareBlock
+# Color reference: # http://www.cookbook-r.com/Graphs/Colors_%28ggplot2%29/
+  
+# text is aligned from bottom-left bounding box (default is center-center)
+# bounding box is anchored using (x,y)
+d=data.frame(
+    x=c(15,15,15,15),
+    y=c(120,95,70,45), 
+    size=c(4.4095,2.5,2.5,2.5),
+    face=c("plain","plain","plain","plain"),
+    label=c(HeaderId1,TextId1,TextId2,TextId3)
+)
+
+# Initialize plot and set scales.  (0,0) is in bottom left, top-right is (150,150), 
+p = ggplot(data=d,mapping=aes(x=x,y=y)) + scale_y_continuous(limits=c(0,150), breaks=NULL) + scale_x_continuous(limits=c(0,150), breaks=NULL) + coord_fixed()
+
+# axes labels (set to blank)
+p = p + theme(axis.title.x = element_blank(), axis.title.y = element_blank(), axis.ticks = element_blank())
+
+# margins
+
+p = p + theme(plot.margin=plot.margin )
+
+# Panel: border, background
+# use >> colors() to view availble colors from R
+p = p + theme(
+           panel.border = element_rect(linetype = "solid",colour=border.color,fill=NA),
+           panel.background=element_rect(fill=bg.color)
+        )
+
+# Content
+#c("plain","bold","italic","bold.italic"c("plain","bold","italic","bold.italic")
+p = p + geom_text(mapping=aes(label=label),size=d$size,colour=fg.color,hjust=0.0,vjust=0,fontface=d$face,family=family)
+
+if (show.anchor) p = p + geom_point(size=0.5)
+
+p
+}
+
+if(show.samples){ TileSquare150x150Text01() }
+
+@
+
+
+<<echo=F,eval=TRUE,fig.height=1.5>>=
+
+TileSquare150x150Text02 = function ( HeaderId1="VitAe ligu",TextId1="Vivamus tincidun convallis urna, in ultrices euismod",
+    bg.color=default.bg.color,
+    fg.color=default.fg.color,
+    border.color=default.border.color,
+    family=default.font.family,
+    logo=NULL,
+    badge=NULL,
+	plot.margin=default.plot.margin,
+    show.anchor=FALSE) {
+# Modeled off Windows 8 tile: http://msdn.microsoft.com/en-us/library/windows/apps/hh761491.aspx#TileSquareBlock
+# Color reference: # http://www.cookbook-r.com/Graphs/Colors_%28ggplot2%29/
+  
+lines = strwrap(TextId1,width=19)
+
+# text is aligned from bottom-left bounding box (default is center-center)
+# bounding box is anchored using (x,y)
+d=data.frame(
+    x=c(15,15,15,15),
+    y=c(120,95,70,45), 
+    size=c(4.4095,2.5,2.5,2.5),
+    face=c("plain","plain","plain","plain"),
+    label=c(HeaderId1,
+      ifelse(length(lines)>=1,lines[1],""),
+      ifelse(length(lines)>=2,lines[2],""),
+      ifelse(length(lines)>=3,lines[3],"")
+    )
+)
+
+# Initialize plot and set scales.  (0,0) is in bottom left, top-right is (150,150), 
+p = ggplot(data=d,mapping=aes(x=x,y=y)) + scale_y_continuous(limits=c(0,150), breaks=NULL) + scale_x_continuous(limits=c(0,150), breaks=NULL) + coord_fixed()
+
+# axes labels (set to blank)
+p = p + theme(axis.title.x = element_blank(), axis.title.y = element_blank(), axis.ticks = element_blank())
+
+# Panel: border, background
+# use >> colors() to view availble colors from R
+p = p + theme(
+           panel.border = element_rect(linetype = "solid",colour=border.color,fill=NA),
+           panel.background=element_rect(fill=bg.color)
+        )
+
+# margins
+
+p = p + theme(plot.margin=plot.margin )
+
+# Content
+#c("plain","bold","italic","bold.italic"c("plain","bold","italic","bold.italic")
+p = p + geom_text(mapping=aes(label=label),size=d$size,colour=fg.color,hjust=0.0,vjust=0,fontface=d$face,family=family)
+
+if (show.anchor) p = p + geom_point(size=0.5)
+
+p
+}
+
+if(show.samples){ TileSquare150x150Text02() }
+
+@
+
+<<echo=F,eval=TRUE,fig.height=1.5>>=
+
+TileSquare150x150Text03 = function ( TextId1="Vivamus tincidun",TextId2="Vivamus tincidun",TextId3="Vivamus tincidun",TextId4="Vivamus tincidun",
+    bg.color=default.bg.color,
+    fg.color=default.fg.color,
+    border.color=default.border.color,
+    family=default.font.family,
+    logo=NULL,
+    badge=NULL,
+	plot.margin=default.plot.margin,
+    show.anchor=FALSE) {
+# Modeled off Windows 8 tile: http://msdn.microsoft.com/en-us/library/windows/apps/hh761491.aspx#TileSquareBlock
+# Color reference: # http://www.cookbook-r.com/Graphs/Colors_%28ggplot2%29/
+  
+# text is aligned from bottom-left bounding box (default is center-center)
+# bounding box is anchored using (x,y)
+d=data.frame(
+    x=c(15,15,15,15),
+    y=c(120,95,70,45), 
+    size=c(2.5,2.5,2.5,2.5),
+    face=c("plain","plain","plain","plain"),
+    label=c(TextId1,TextId2,TextId3,TextId4)
+)
+
+# Initialize plot and set scales.  (0,0) is in bottom left, top-right is (150,150), 
+p = ggplot(data=d,mapping=aes(x=x,y=y)) + scale_y_continuous(limits=c(0,150), breaks=NULL) + scale_x_continuous(limits=c(0,150), breaks=NULL) + coord_fixed()
+
+# axes labels (set to blank)
+p = p + theme(axis.title.x = element_blank(), axis.title.y = element_blank(), axis.ticks = element_blank())
+
+# Panel: border, background
+# use >> colors() to view availble colors from R
+p = p + theme(
+           panel.border = element_rect(linetype = "solid",colour=border.color,fill=NA),
+           panel.background=element_rect(fill=bg.color)
+        )
+
+# margins
+
+p = p + theme(plot.margin=plot.margin )
+
+# Content
+#c("plain","bold","italic","bold.italic"c("plain","bold","italic","bold.italic")
+p = p + geom_text(mapping=aes(label=label),size=d$size,colour=fg.color,hjust=0.0,vjust=0,fontface=d$face,family=family)
+
+if (show.anchor) p = p + geom_point(size=0.5)
+
+p
+}
+
+if(show.samples){ TileSquare150x150Text03() }
+
+@
+
+
+
+
+\end{document}
