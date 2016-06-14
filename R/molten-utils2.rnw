@@ -38,56 +38,6 @@ Below are the common R packages that are loded.
 # Make any changes to this original file!
 #
 ###
-
-<<echo=T>>=
-###
-#
-# The following code comes from file "molten-utils.rnw"
-# Make any changes to this original file!
-#
-###
-
-# This is a list of commonly used packages.  Keep it maintained and upgrading
-# to newer versions of R will be much easier.
-
-desired.package.list = c("reshape2","plyr","ggplot2","xtable","tools","gridExtra","Hmisc","maps","mapproj",
-                         "knitr","WriteXLS","R2wd","stringr","xts","lubridate","RColorBrewer","likert")
-
-# fragile packages are necessary but might have not yet been upgraded to current version of R
-# use the fragile.package.list to keep track of what you might need.
-
-fragile.package.list = "RDCOMCLIENT"
-
-missing.package.list = setdiff(desired.package.list,intersect(rownames(installed.packages()),desired.package.list))
-
-for (p in missing.package.list){
-    install.packages(p)
-}
-
-missing.package.list = setdiff(desired.package.list,intersect(rownames(installed.packages()),desired.package.list))
-
-if( length(missing.package.list)> 1) {
-  msg = paste("
-** Couldn't install desired packages:",paste(missing.package.list,collapse=","),"
-** You must have recently upgraded to newer version of R.
-** If you really need the routines, install them from source
-** otherwise remove from desired.package.list.
-")
-  stop(paste("Refer to file molten-utils.rnw",msg),call.=FALSE)
-}
-
-OK = 1==1
-for (p in desired.package.list){
-   OK = OK & eval(parse(text=paste("suppressPackageStartupMessages(suppressWarnings(require(",p,",quietly=TRUE)))")))
-}
-
-if(!OK){
-  msg = paste("
-** Desired packages couldn't be installed.
-")
-stop(paste("Refer to file molten-utils.rnw",msg),call.=FALSE)
-}
-
 @
 
 \section{Common utility functions}

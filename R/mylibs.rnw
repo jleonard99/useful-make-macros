@@ -1,0 +1,97 @@
+\documentclass[11pt]{article}
+\usepackage{commonstyle}
+
+\title{Useful libraries for my workflow}
+\author{John Leonard}
+
+\begin{document}
+
+% ===============================================================================================
+% Front matter
+% ===============================================================================================
+
+
+\maketitle
+\begin{abstract}
+This report documents the various utility R subroutines and functions used
+when building molten-data files.  These routine are separated from
+other routines to minimize the need to rebuild the molten data files as work progresses
+on the rest of the reporting system.
+\end{abstract}
+
+\tableofcontents
+
+\section{About}
+These common utilities are combined with several environment settings to create an RParams file.  These
+RParams files are loaded each time a RNW file is processed.
+
+This file includes both common packages that get loaded and used throughout report generation,
+and common utility functions that are reused throughout report generation.
+
+\section{Common packages to be loaded}
+Below are the common R packages that are loded.
+
+<<echo=T>>=
+###
+#
+# The following code comes from file "molten-utils.rnw"
+# Make any changes to this original file!
+#
+###
+
+<<echo=T>>=
+###
+#
+# The following code comes from file "molten-utils.rnw"
+# Make any changes to this original file!
+#
+###
+
+# This is a list of commonly used packages.  Keep it maintained and upgrading
+# to newer versions of R will be much easier.
+
+desired.package.list = c("knitr","tidyr","dplyr","lubridate","stringr","ggplot2","tibble","RSQLite","sqldf",
+                         "xtable","tools","gridExtra","Hmisc","maps","mapproj",
+                         "WriteXLS","R2wd","xts","RColorBrewer","likert")
+
+# fragile packages are necessary but might have not yet been upgraded to current version of R
+# use the fragile.package.list to keep track of what you might need.
+
+fragile.package.list = "RDCOMCLIENT"
+
+missing.package.list = setdiff(desired.package.list,intersect(rownames(installed.packages()),desired.package.list))
+
+for (p in missing.package.list){
+    install.packages(p)
+}
+
+missing.package.list = setdiff(desired.package.list,intersect(rownames(installed.packages()),desired.package.list))
+
+if( length(missing.package.list)> 1) {
+  msg = paste("
+** Couldn't install desired packages:",paste(missing.package.list,collapse=","),"
+** You must have recently upgraded to newer version of R.
+** If you really need the routines, install them from source
+** otherwise remove from desired.package.list.
+")
+  stop(paste("Refer to file molten-utils.rnw",msg),call.=FALSE)
+}
+
+OK = 1==1
+for (p in desired.package.list){
+   OK = OK & eval(parse(text=paste("suppressPackageStartupMessages(suppressWarnings(require(",p,",quietly=TRUE)))")))
+}
+
+if(!OK){
+  msg = paste("
+** Desired packages couldn't be installed.
+")
+stop(paste("Refer to file mylibs.rnw",msg),call.=FALSE)
+}
+
+@
+
+
+
+\end{document}
+

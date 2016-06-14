@@ -41,6 +41,7 @@ format.number = function(value,pre="",post="",digits=0,multiply.by=1){
 as.number0 = function(value){ format.number(value,digits=0,pre="") }
 as.number1 = function(value){ format.number(value,digits=1,pre="") }
 as.number2 = function(value){ format.number(value,digits=2,pre="") }
+as.number3 = function(value){ format.number(value,digits=3,pre="") }
 as.dollar = function(value){ format.number(value,digits=0,pre="$") }
 as.Kdollar = function(value){ format.number(value,digits=2,multiply.by=1/1000,pre="$",post="K") }
 as.Mdollar = function(value){ format.number(value,digits=2,multiply.by=1/1000000,pre="$",post="M") }
