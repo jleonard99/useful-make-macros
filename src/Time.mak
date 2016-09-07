@@ -106,6 +106,7 @@ $(call set,set.mo,12,12)
 convert.cp.to.fp = $(call calc.fy,$(1))$(call calc.fm,$(1))
 
 ## curr.yearmo:  ex. 201506
+
 curr.time := $(shell date.exe +%Y%m)
 curr.yearmo := $(call memoize,curr.time)
 
