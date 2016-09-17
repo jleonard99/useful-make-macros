@@ -1,9 +1,9 @@
-ifeq ($(R_TOOLS),)
-$(info + $(R_TOOLS))
-$(info + R_TOOLS not set.  Run SETRTOOLS.BAT )
-$(info + )
-$(error ***)
-endif
+#ifeq ($(R_TOOLS),)
+#$(info + $(R_TOOLS))
+#$(info + R_TOOLS not set.  Run SETRTOOLS.BAT )
+#$(info + )
+#$(error ***)
+#endif
 
 title.search.files = Makefile
 
