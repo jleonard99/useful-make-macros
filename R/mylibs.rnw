@@ -42,7 +42,7 @@ Below are the common R packages that are loded.
 <<echo=T>>=
 ###
 #
-# The following code comes from file "molten-utils.rnw"
+# The following code comes from file "mylibs.rnw"
 # Make any changes to this original file!
 #
 ###
@@ -62,7 +62,7 @@ fragile.package.list = "RDCOMCLIENT"
 missing.package.list = setdiff(desired.package.list,intersect(rownames(installed.packages()),desired.package.list))
 
 for (p in missing.package.list){
-    install.packages(p)
+    install.packages(p,repos="http://cran.rstudio.com/")
 }
 
 missing.package.list = setdiff(desired.package.list,intersect(rownames(installed.packages()),desired.package.list))
