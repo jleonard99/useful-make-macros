@@ -1,0 +1,146 @@
+\documentclass[11pt]{article}
+\usepackage{commonstyle}
+
+\title{Utility routines for building molten files}
+\author{John Leonard}
+
+\begin{document}
+
+% ===============================================================================================
+% Front matter
+% ===============================================================================================
+
+
+\maketitle
+\begin{abstract}
+This report documents the various utility R subroutines and functions used
+when building molten-data files.  These routine are separated from
+other routines to minimize the need to rebuild the molten data files as work progresses
+on the rest of the reporting system.
+\end{abstract}
+
+\tableofcontents
+
+\section{About}
+These common utilities are combined with several environment settings to create an RParams file.  These
+RParams files are loaded each time a RNW file is processed.
+
+This file includes both common packages that get loaded and used throughout report generation,
+and common utility functions that are reused throughout report generation.
+
+\section{Common packages to be loaded}
+Below are the common R packages that are loded.
+
+<<echo=T>>=
+###
+#
+# The following code comes from file "molten-utils.rnw"
+# Make any changes to this original file!
+#
+###
+@
+
+\section{Common utility functions}
+
+\subsection{subroutine table_ListToRow}
+
+<<echo=T>>=
+
+table_ListToRow = function( x ){
+  s = encoded_text_to_latex(paste(x,collapse=' & '))
+  s = gsub("_","\\\\_",s)
+  s
+}
+@
+
+\subsection{function trim}
+
+<<echo=T>>=
+trim = function(s){
+x = sub("^[[:space:]]*(.*?)[[:space:]]*$", "\\1", s, perl=TRUE)
+return(x)
+}
+@
+
+\subsection{function table_ListToRows}
+
+<<echo=T>>=
+table_ListToRows = function( x ) {
+result = ""
+for(i in 1:length(x)){
+  s = encoded_text_to_latex(paste(names(x)[i],x[[i]],sep=" & "))
+  s = gsub("_","\\\\_",s)
+  if (i==1) {
+    result = s
+  } else {
+    result = paste(result,s,sep="\\\\\n")
+  }
+}
+if(nchar(result)>0) result = paste(result,"\\\\\n",sep="")
+result
+}
+@
+
+\subsection{function showParamsAsTable}
+<<echo=T>>=
+showParamsAsTable = function(){
+header = "
+\\begin{table}[h]%
+\\footnotesize\\centering
+\\begin{tabularx}{0.8\\textwidth}{lX}
+\\toprule%
+param name & value\\\\%
+\\midrule
+"
+middle = table_ListToRows(params)
+footer = "
+\\bottomrule
+\\end{tabularx}
+\\caption[List of parameters passed by makefile]{List of parameters passed by makefile}
+\\end{table}
+"
+result = paste(header,middle,footer,sep="")
+}
+
+
+@
+
+\subsection{function parseKeyValues}
+<<echo=T>>=
+addKeyValues = function(name.value.pairs="",existing.list=list()){
+temp = gsub("==","=",name.value.pairs) # a helper, often one will write Gender==F rather than Gender=F
+x = unlist(strsplit(unlist(strsplit(temp,";")),"="))
+if(length(x)>=2){
+  existing.list[x[seq(1,length(x),2)]] = x[seq(2,length(x),2)]
+}
+existing.list
+}
+
+@
+
+<<echo=T>>=
+cleanName  = function( file.name ){
+  gsub("_","\\\\_",file.name)
+}
+@
+
+<<echo=T>>=
+insertSQLfile = function(
+  file,
+  desc=NULL,
+  section=NULL
+){
+  
+cat("\n%% InsertSQLfile: ",file,"\n\n",sep="")
+#  cat("\\clearpage\n",sep="")
+if (!is.null(section)) cat(section,sep="")
+if (!is.null(desc)) cat("\\input{",desc,"}\n",sep="")
+cat("\\fvset{fontsize=\\footnotesize,frame=lines,fontshape=sl,numbers=left,label=SQL file ",cleanName(file),"}\n\n",sep="")
+cat("\\VerbatimInput{",file,"}\n\n",sep="")
+}
+
+@
+
+
+\end{document}
+

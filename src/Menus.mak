@@ -35,3 +35,4 @@ help:
 	@echo +
 	@grep -P -i "\.title(.*)=" src/Menus.mak | grep -v "\@grep" | sed -n -e "s/\.title//p" | sed -e "s/^/+ /" | sed -e "s/==//"
 	@echo +
+

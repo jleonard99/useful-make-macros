@@ -10,6 +10,7 @@
 comma := ,
 empty :=
 space := $(empty) $(empty)
+quote := ''
 
 # new line macro.  Used like $(\n) and drops a new line into the recipe
 # cool for using $(foreach) to generate arguments like:
@@ -104,26 +105,26 @@ endef
 
 define recipe-rnw-to-tex
 	@echo [usefl] Knitting rnw to tex: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit\$$set(progress = FALSE, verbose = FALSE); suppressMessages(knit('$(firstword $(^))'))" 2>&1 | sed -e "s/^/+ /"
+	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit\$$set(progress = FALSE, verbose = FALSE); suppressMessages(knit('$(firstword $(^))'))" 2>&1 | sed -e "s/^/\[usefl\] /"
 endef
 
 define recipe-rhtml-to-html
 	@echo [usefl] Knitting rhtml to html: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit\$$set(progress = FALSE, verbose = FALSE); suppressMessages(knit2html('$(firstword $(^))'))" 2>&1 | sed -e "s/^/+ /"
+	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit\$$set(progress = FALSE, verbose = FALSE); suppressMessages(knit2html('$(firstword $(^))'))" 2>&1 | sed -e "s/^/\[usefl\] /"
 endef
 
 define recipe-rmd-to-html
 	@echo [usefl] Knitting rmd to html: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); library(markdown); build.file='$(@)'; opts_knit\$$set(progress = FALSE, verbose = FALSE); source('$(firstword $(subst ., ,$(@))).Rparams'); knit2html('$(firstword $(^))')" 2>&1 | sed -e "s/^/+ /"
+	"$(R)" --slave --quiet -e "library(knitr); library(markdown); build.file='$(@)'; opts_knit\$$set(progress = FALSE, verbose = FALSE); source('$(firstword $(subst ., ,$(@))).Rparams'); knit2html('$(firstword $(^))')" 2>&1 | sed -e "s/^/\[usefl\] /"
 endef
 
 define recipe-rnw-to-r
 	@echo [usefl] Purling rnw to R: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit\$$set(progress = FALSE, verbose = FALSE); purl('$(firstword $(^))')" 2>&1 | sed -e "s/^/+ /"
+	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit\$$set(progress = FALSE, verbose = FALSE); purl('$(firstword $(^))')" 2>&1 | sed -e "s/^/\[usefl-rnw-to-r\] /"
 endef
 
 define recipe-r-to-rdata
-	@echo [usefl] Storing Rdata file: $(@) using $(word 1,$(^))
+	@echo [usefl] Storing Rdata file: $(@)
 	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 1>$(NULL)
 endef
 
@@ -153,9 +154,9 @@ define recipe-copy-file
 	$(COPY) $(^) $(@)
 endef
 
-define recipe-sql-to-csv
+define recipe-sql-to-csv-dsgroot
 	@echo [usefl] Query to csv file: $(@)
-	$(REPORTER) csv --query-file=$(^) --csv-file=$(@)
+	$(REPORTER) csv --query-file=$(^) --csv-file=$(@) --DSN=$(DSGROOT_DSN) --USER=$(DSGROOT_USER) --PASS=$(DSGROOT_PASS)
 endef
 
 define recipe-tex-to-pdf
@@ -166,8 +167,16 @@ define recipe-tex-to-pdf
 	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 endef
 
-define recipe-tex-to-pdf-old
-	@echo [usefl] Building PDF file: $(@)
+define recipe-tex-to-xelatex
+	@echo [usefl] Building PDF file: $(@) - XELATEX
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+endef
+
+define recipe-tex-to-pdflatex
+	@echo [usefl] Building PDF file: $(@) - $(PDFTEX)
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
@@ -181,5 +190,14 @@ define recipe-tex-to-pdfbib
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 	$(PDFTEX) --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+endef
+
+define recipe-tex-to-xelatex-bib
+	@echo [usful] Building PDF with BIB file: $(@)
+	xelatex --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	bibtex $(word 1,$(subst ., ,$(@)))
+	xelatex --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
+	xelatex --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 endef
 
