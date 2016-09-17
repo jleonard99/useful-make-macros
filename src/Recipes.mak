@@ -159,6 +159,11 @@ define recipe-sql-to-csv-dsgroot
 	$(REPORTER) csv --query-file=$(^) --csv-file=$(@) --DSN=$(DSGROOT_DSN) --USER=$(DSGROOT_USER) --PASS=$(DSGROOT_PASS)
 endef
 
+define recipe-sql-to-csv-egrprod
+	@echo [usefl] Query to csv file: $(@)
+	$(REPORTER) csv --query-file=$(^) --csv-file=$(@) --DSN=$(EGRPROD_DSN) --USER=$(EGRPROD_USER) --PASS=$(EGRPROD_PASS)
+endef
+
 define recipe-tex-to-pdf
 	@echo [usefl] Building PDF file: $(@) - XELATEX
 	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))

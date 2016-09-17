@@ -148,13 +148,13 @@ seq.to.yearmo = $(call plus,$(call divide,$(1),12),1950)$(call get,set.mo,$(call
 #ex.yearmo.to.seq := $(call yearmo.to.seq,$(curr.yearmo))
 #ex.seq.to.yearmo := $(call seq.to.yearmo,$(ex.yearmo.to.seq))
 
-# returns a list of N previous periods including current period by year.  works for both FY and CY
+# returns a list of N previous periods including current period by year.  works for both FY and CY and TERM
 calc.n.mo.by.yr = $(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call calc.year,$(1)),$(year))$(call calc.mo,$(1)))
 
 #ex.calc.5.fp.by.fy := $(call calc.n.mo.by.yr,$(curr.fp),5)
 #ex.calc.3.cp.by.cy := $(call calc.n.mo.by.yr,$(curr.yearmo),3)
 
-# returns a list of N previous periods including current period by period.  works for by FY and CY
+# returns a list of N previous periods including current period by period.  works for by FY and CY, NOT TERM
 calc.n.mo.by.mo = $(foreach mo,$(call calc.seq,$(2)),$(call seq.to.yearmo,$(call subtract,$(call yearmo.to.seq,$(1)),$(mo))))
 
 #ex.calc.36.fp.by.fp := $(call calc.n.mo.by.mo,201509,36)
@@ -169,6 +169,7 @@ fy.by.n.fy = $(sort $(call map,prepend.fy,$(foreach year,$(call calc.seq,$(2)),$
 cy.by.n.cy = $(sort $(call map,prepend.cy,$(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call pick.cy,$(1)),$(year)))))
 
 yr.by.n.yr = $(sort $(foreach year,$(call calc.seq,$(2)),$(subst $(space),,$(call pick.yr.type,$(1))$(call subtract,$(call pick.cy,$(1)),$(year)))))
+term.by.n.term = $(sort $(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call calc.year,$(1)),$(year))$(call calc.mo,$(1))))
 
 #ex.fp.by.n.fy := $(call fp.by.n.fy,FP201511,5)
 #ex.fp.by.n.fp := $(call fp.by.n.fp,FP201511,60)
@@ -180,16 +181,19 @@ arg.fp.by.n.fp = $(call fp.by.n.fp,$(call arg.time,$(1)),$(2))
 arg.fy.by.n.fy = $(call fy.by.n.fy,$(call arg.time,$(1)),$(2))
 arg.cy.by.n.cy = $(call cy.by.n.cy,$(call arg.time,$(1)),$(2))
 arg.yr.by.n.yr = $(call yr.by.n.yr,$(call arg.time,$(1)),$(2))
+arg.term.by.n.term = $(call term.by.n.term,$(call arg.time,$(1)),$(2))
 
 arg.fp.by.n.fy.list = $(call to.list,$(call arg.fp.by.n.fy,$(1),$(2)))
 arg.fp.by.n.fp.list = $(call to.list,$(call arg.fp.by.n.fp,$(1),$(2)))
 arg.fy.by.n.fy.list = $(call to.list,$(call arg.fy.by.n.fy,$(1),$(2)))
 arg.cy.by.n.cy.list = $(call to.list,$(call arg.cy.by.n.cy,$(1),$(2)))
 arg.yr.by.n.yr.list = $(call to.list,$(call arg.yr.by.n.yr,$(1),$(2)))
+arg.term.by.n.term.list = $(call to.list,$(call arg.term.by.n.term,$(1),$(2)))
 
 arg.fp.by.n.fp.sql = $(call to.list,$(call single.quote,$(call arg.fp.by.n.fp,$(1),$(2))))
 arg.fy.by.n.fy.sql = $(call to.list,$(call single.quote,$(call arg.fy.by.n.fy,$(1),$(2))))
 arg.cy.by.n.cy.sql = $(call to.list,$(call single.quote,$(call arg.cy.by.n.cy,$(1),$(2))))
+arg.term.by.n.term.sql = $(call to.list,$(call single.quote,$(call arg.term.by.n.term,$(1),$(2))))
 
 arg.fp.by.5.fy  = $(call fp.by.n.fy,$(call arg.time,$(1)),5)
 arg.fp.by.12.fp = $(call fp.by.n.fp,$(call arg.time,$(1)),12)
@@ -238,3 +242,4 @@ show-time:
 	@echo --calendar-year-32488=$$\(call arg.cy.by.n.cy.list,$$\(@\),5\)
 	@echo --$$\(call time.style,$$\(call arg.time,$$\(@\)\)\)-32100=$$\(call arg.time,$$\(@\)\)
 	@echo --$$\(call arg.time.style,$$\(@\)\)-32100=$$\(call arg.yr.by.n.yr.list,$$\(@\),5\)
+	@echo --term-code=$$\(call arg.1\,$$\(@\)\)
