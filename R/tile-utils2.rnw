@@ -8,12 +8,14 @@ show.samples = FALSE
 
 source("molten-utils2.R")
 
-default.bg.color  = "#00274F"      # GT adjusted PMS 539: CMYK 100,51,0,69 Dark blue
-default.border.color  = "#00274F"  # GT adjusted PMS 539: CMYK 100,51,0,69 Dark blue
+#default.bg.color       = "#00274F"  # GT adjusted PMS 539: CMYK 100,51,0,69 Dark blue
+#default.border.color   = "#00274F"  # GT adjusted PMS 539: CMYK 100,51,0,69 Dark blue
  
-##default.bg.color = "steelblue4"
-default.fg.color = "white"
-##default.border.color = "steelblue4"
+default.bg.color       = "#000000"  # VCU black: CMYK 0,0,0,100 Black
+default.border.color   = "#000000"  # VCU black: CMYK 0,0,0,100 Black
+
+default.fg.color = "#FFBA00"    # VCU Gold PMS 130C : CMYK 0,22,100,0 (uncoated) 0,27,100,0 (coated)
+
 default.font.family = "sans"
 
 default.plot.margin = unit(c(1, 1, -9, -5)*0.05, "cm")

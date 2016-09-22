@@ -50,7 +50,7 @@ Below are the common R packages that are loded.
 # This is a list of commonly used packages.  Keep it maintained and upgrading
 # to newer versions of R will be much easier.
 
-desired.package.list = c("knitr","tidyr","dplyr","lubridate","stringr","ggplot2","tibble","RSQLite","sqldf",
+desired.package.list = c("knitr","reshape2","tidyr","dplyr","lubridate","stringr","ggplot2","tibble","RSQLite","sqldf",
                          "xtable","tools","gridExtra","Hmisc","maps","mapproj",
                          "WriteXLS","R2wd","xts","RColorBrewer","likert")
 
