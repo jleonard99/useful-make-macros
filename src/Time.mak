@@ -109,6 +109,7 @@ convert.cp.to.fp = $(call calc.fy,$(1))$(call calc.fm,$(1))
 
 curr.time := $(shell date.exe +%Y%m)
 curr.yearmo := $(call memoize,curr.time)
+curr.timestamp := $(shell date.exe +%Y%m%d%H%M)
 
 ## returns pieces of current month
 curr.year := $(call calc.year,$(curr.yearmo))
@@ -218,7 +219,7 @@ convert.fp.to.words  = $(call calc.fpname,$(call pick.fp,$(1))) $(call calc.cy,$
 
 curr.fp.in.words := $(call convert.fp.to.words,FP$(curr.fp))
 
-time.vars := curr.yearmo curr.year curr.mo curr.fy curr.fp curr.fp.in.words prev.yearmo prev.year prev.mo prev.fy prev.fp next.fy window.curr.4.fy.by.fy
+time.vars := curr.timestamp curr.yearmo curr.year curr.mo curr.fy curr.fp curr.fp.in.words prev.yearmo prev.year prev.mo prev.fy prev.fp next.fy window.curr.4.fy.by.fy
 
 show-time.title := Usage info and time.vars available in makefile
 show-time:
