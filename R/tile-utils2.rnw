@@ -14,7 +14,11 @@ source("molten-utils2.R")
 default.bg.color       = "#000000"  # VCU black: CMYK 0,0,0,100 Black
 default.border.color   = "#000000"  # VCU black: CMYK 0,0,0,100 Black
 
+default.bg.color      = "#63656A"  # VCU GRAY - Pantone cool grey 10 CMYK 62/53/48/19
+default.border.color  = "#000000"  # 
+
 default.fg.color = "#FFBA00"    # VCU Gold PMS 130C : CMYK 0,22,100,0 (uncoated) 0,27,100,0 (coated)
+default.fg.color = "white"
 
 default.font.family = "sans"
 
