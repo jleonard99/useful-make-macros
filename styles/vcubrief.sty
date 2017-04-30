@@ -1,0 +1,134 @@
+%% VCU Brief - macros for pretty 1-page briefing sheets
+%% \documentclass[10pt,twoside,openright]{report}
+%% \usepackage{vcubrief}
+%%
+
+%%
+%% Macros used by header and footer.
+%% use \renewcommand to change in main document.
+%%
+
+\newcommand{\orgabbr}{orgabbr}
+\newcommand{\orgshortname}{orgshortname}
+\newcommand{\orglongname}{orglongname}
+\newcommand{\orgparentlongname}{orgparentlongname}
+\newcommand{\orgtype}{orgtype}
+\newcommand{\asofday}{\today}
+
+\usepackage{geometry}
+\geometry{verbose,nomarginpar,tmargin=2.0cm,bmargin=2.0cm,lmargin=1.5cm,rmargin=1.0cm}
+%\usepackage{showframe}
+
+%% packages - the order really, really matters!
+
+\usepackage{alltt}
+\usepackage{fontspec}  % for xelatex
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{upquote}
+\usepackage{verbatim}
+\usepackage{setspace}
+\usepackage{array}
+\usepackage{booktabs,ctable,tabularx,multirow,longtable}
+\usepackage[section]{placeins}
+\usepackage{fancyvrb,pdfpages,appendix}
+\usepackage{rotating}
+\usepackage[mdyyyy,hhmmss]{datetime}
+
+
+\setmainfont{Calibri} % this font matches Win10 documents
+
+
+
+
+\usepackage{enumitem}
+\setlist[itemize]{itemsep=-1.0\parsep}
+
+
+%% set counters for table of contents
+
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+
+
+%%\usepackage[sc]{mathpazo}
+
+
+
+%\usepackage{url}
+
+%\usepackage[unicode=true,pdfusetitle,
+% bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+% breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+% {hyperref}
+%\hypersetup{pdfstartview={XYZ null null 1}}
+%\usepackage{breakurl}
+
+%\usepackage{pifont}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+
+
+%%\usepackage{natbib}
+%%\usepackage{times}
+
+
+
+\let\origdoublepage\cleardoublepage
+\newcommand{\clearemptydoublepage}{%
+  \clearpage
+  {\pagestyle{empty}\origdoublepage}%
+}
+\let\cleardoublepage\clearemptydoublepage
+
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+
+\usepackage[compact]{titlesec}
+%% http://tug.ctan.org/tex-archive/macros/latex/contrib/titlesec/titlesec.pdf
+%%\titleformat{\section}[<shape>]{<format>}{<label>}{<sep>}{<before-code>}[<after-code>]
+%%\titleformat{\section}[hang]{\Huge\bfseries\center}{\thesection}{20pt}{y}[z]
+%%\titleformat{\section}[block]{\huge\bfseries\center}{}{0pt}{\vrule height\dimexpr\ht\strutbox+6pt\relax width 0pt depth 0pt}
+
+\titleformat{\chapter}[block]{\huge\bfseries}{}{0pt}{\filcenter}[\vspace{-6pt}\large\orglongname~---~as of \asofday]
+\titlespacing*{\chapter}{0pt}{30pt}{12pt}
+
+%\usepackage{showframe}
+
+
+\usepackage{tocloft}
+
+\makeatletter
+\newcommand*{\toccontents}{\@starttoc{toc}}
+\newcommand*{\lotcontents}{\@starttoc{lot}}
+\makeatother
+
+\setlength{\parskip}{3pt plus3pt minus3pt}
+
+\setcounter{tocdepth}{0}%
+\setlength{\cftbeforechapskip}{0pt}%
+\renewcommand*\thesection{\arabic{section}}
+
+
+
+% \setromanfont{Times New Roman}
+% \setsansfont{Arial}
+% \setmonofont[Color={0019D4}]{Courier New}
+
+
+%% from http://tex.stackexchange.com/questions/74591/multi-page-two-column-table-in-a-single-column-document/87957#87957
+%% hack to allow longtable to spread across two columns.
+
+\makeatletter
+\let\saved@longtable\longtable
+\long\def\foo#1\LT@err#2#3#4!!{\def\longtable{#1#4}}
+\expandafter\foo\longtable!!
+
+\long\def\foo#1\@outputpage#2\@outputpage#3!!{%
+\def\LT@output{#1\@opcol#2\@opcol#3}}
+\expandafter\foo\LT@output!!
+\makeatother
+
+\definecolor{barborder}{HTML}{F1B828}
+
