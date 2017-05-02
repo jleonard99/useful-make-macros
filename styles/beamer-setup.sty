@@ -83,5 +83,16 @@
 \usepackage{fontspec}
 \setmainfont{Univers LT Std 45 Light}
 
+\setbeamerfont{itemize/enumerate body}{family=\sffamily, size={\fontsize{12}{12}}}
+\setbeamerfont{itemize/enumerate subbody}{family=\sffamily, size={\fontsize{11}{11}}}
+\setbeamerfont{itemize/enumerate subsubbody}{family=\sffamily, size={\fontsize{10}{10}}}
+\setbeamertemplate{itemize subitem}{{\textendash}}
+\setbeamertemplate{itemize subsubitem}{{\textbullet}}  % or \textperiodcentered
 
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+
+\setbeamertemplate{itemize/enumerate body begin}{\itemsep2.5ex}
+\setbeamertemplate{itemize/enumerate subbody begin}{\itemsep2.0ex}
+\setbeamertemplate{itemize/enumerate subsubbody begin}{\itemsep1.0ex}
 
