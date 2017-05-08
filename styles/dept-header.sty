@@ -1,0 +1,43 @@
+%%
+%% -- Fancy page headers.  Typography for headers/footers and page styles.
+%%
+%% Must redefine the plain style to ensure first page gets formatted properly.
+%%
+
+\usepackage{overpic}  %% added 9/22/2016.  Drop text on top of image graphic
+\usepackage{fancyhdr}
+
+%%\fancypagestyle{default}{
+  \fancyhf{}% Clear header/footer
+  \fancyhead[L]{\nouppercase{\leftmark} - \orgshortname}% Left header on non-first pages
+  \fancyhead[R]{\today}% Right header
+  \fancyfoot[L]{\@title}% Left footer
+  \fancyfoot[C]{\thepage}% Right footer
+  \fancyfoot[R]{\@author}% Right footer
+  \renewcommand{\headrulewidth}{0.4pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+%%}
+
+\pagestyle{fancy}
+
+%% defining "plain" style ensures this is shown on first page without much effort.
+\fancypagestyle{plain}{
+  \fancyhf{}% Clear header/footer
+  \fancyhead[L]{
+  \begin{overpic}[scale=1.0,unit=1mm]{useful-vcu-macros/etc/vcumasthead.png}
+  \put(30.50,2.05){\colorbox{black}{\textcolor{white}{\fontspec{Arial Narrow}\fontsize{14}{15.4}\selectfont%
+    \orglongname
+     }}}
+  \put(30.50,5.5){\colorbox{black}{\textcolor{white}{\fontspec{Arial Narrow}\fontsize{24}{26.4}\selectfont%
+    \orgparentlongname
+     }}}
+\end{overpic} 
+  }% Left header
+%  \fancyhead[R]{\today}% Right header
+  \fancyfoot[L]{\@title}% Left footer
+  \fancyfoot[C]{\thepage}% Right footer
+  \fancyfoot[R]{\@author}% Right footer
+  \renewcommand{\headrulewidth}{0.0pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+}
+

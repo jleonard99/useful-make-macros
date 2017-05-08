@@ -45,6 +45,9 @@ as.number3 = function(value){ format.number(value,digits=3,pre="") }
 as.dollar = function(value){ format.number(value,digits=0,pre="$") }
 as.Kdollar = function(value){ format.number(value,digits=2,multiply.by=1/1000,pre="$",post="K") }
 as.Mdollar = function(value){ format.number(value,digits=2,multiply.by=1/1000000,pre="$",post="M") }
+as.Mdollar0 = function(value){ format.number(value,digits=0,multiply.by=1/1000000,pre="$",post="M") }
+as.Mdollar1 = function(value){ format.number(value,digits=1,multiply.by=1/1000000,pre="$",post="M") }
+as.Mdollar2 = function(value){ format.number(value,digits=2,multiply.by=1/1000000,pre="$",post="M") }
 as.percent1 = function(value){ format.number(value,multiply.by=100,digits=1,post="%") }
 as.percent0 = function(value){ format.number(value,multiply.by=100,digits=0,post="%") }
 
