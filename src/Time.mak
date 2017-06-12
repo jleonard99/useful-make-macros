@@ -13,13 +13,14 @@ calc.mo = $(call substr,$(1),5,6)
 calc.fy = $(if $(findstring $(call substr,$(1),5,6),07 08 09 10 11 12),$(call inc,$(call substr,$(1),1,4)),$(call substr,$(1),1,4))
 calc.cy = $(if $(findstring $(call substr,$(1),5,6),07 08 09 10 11 12),$(call substr,$(1),1,4),$(call dec,$(call substr,$(1),1,4)))
 
-time.style = $(if $(findstring $(call substr,$(1),1,2),FP),fiscal-period,$(if $(findstring $(call substr,$(1),1,2),FY),fiscal-year,$(if $(findstring $(call substr,$(1),1,2),CY),calendar-year,term-code)))
+time.style = $(if $(findstring $(call substr,$(1),1,2),FP),fiscal-period,$(if $(findstring $(call substr,$(1),1,2),FY),fiscal-year,$(if $(findstring $(call substr,$(1),1,2),CY),calendar-year,$(if $(findstring $(call substr,$(1),1,2),PP),pay-period,term-code))))
 arg.time.style = $(call time.style,$(call arg.time,$(1)))
 
 pick.yr.type = $(call substr,$(1),1,2)  # assumes year field starts with 2-character code  FY CY CP FP
 pick.fy = $(call substr,$(1),3,6)
 pick.cy = $(call substr,$(1),3,6)
 pick.fp = $(call substr,$(1),3,8)
+pick.pp = $(call substr,$(1),3,8)
 
 # Named pieces of filename arguments
 #
@@ -30,6 +31,7 @@ arg.time = $(word 3,$(subst ., ,$(subst -, ,$(1))))
 arg.term = $(word 3,$(subst ., ,$(subst -, ,$(1))))
 arg.fy = $(call pick.fy,$(call arg.time,$(1)))
 arg.fp = $(call pick.fp,$(call arg.time,$(1)))
+arg.pp = $(call pick.pp,$(call arg.time,$(1)))
 
 basename = $(firstword $(subst ., ,$(1)))
 
@@ -49,6 +51,7 @@ arg.n = $(firstword $(word $(2),$(subst -, ,$(firstword $(subst ., ,$(1))))) $(3
 
 # pre-pend strings to yearmo stuff
 prepend.fp = FP$(1)
+prepend.pp = PP$(1)
 prepend.fy = FY$(1)
 prepend.cp = CP$(1)
 prepend.cy = CY$(1)
@@ -89,6 +92,7 @@ $(call set,set.fpname,12,Jun)
 calc.fpname = $(call get,set.fpname,$(call substr,$(1),5,6))
 
 # convert integer month to 2-digit month (addsleading zero if needed)
+# will also work with payperiods that run to 24 per year.
 $(call set,set.mo,1,01)
 $(call set,set.mo,2,02)
 $(call set,set.mo,3,03)
@@ -101,6 +105,18 @@ $(call set,set.mo,9,09)
 $(call set,set.mo,10,10)
 $(call set,set.mo,11,11)
 $(call set,set.mo,12,12)
+$(call set,set.mo,13,13)
+$(call set,set.mo,14,14)
+$(call set,set.mo,15,15)
+$(call set,set.mo,16,17)
+$(call set,set.mo,17,17)
+$(call set,set.mo,18,18)
+$(call set,set.mo,19,19)
+$(call set,set.mo,20,20)
+$(call set,set.mo,21,21)
+$(call set,set.mo,22,22)
+$(call set,set.mo,23,23)
+$(call set,set.mo,24,24)
 
 # Convert a calendar period (201506 to fiscal period 201511)
 convert.cp.to.fp = $(call calc.fy,$(1))$(call calc.fm,$(1))
@@ -118,6 +134,8 @@ curr.fm := $(call calc.fm,$(curr.yearmo))
 curr.fp := $(call convert.cp.to.fp,$(curr.yearmo))
 curr.cy := $(call calc.year,$(curr.yearmo))
 
+## returns current pay period using table VCU_PTRCALN
+curr.pp := $(shell sqlcmd -S jacksonhole.vcu.edu -d EGRDataWarehouse -Q "set nocount on;select top 1 ptrcaln_year*100+ptrcaln_payno from base_vcu_ptrcaln where ptrcaln_check_date<=getdate() order by 1 desc" -W -k2 -h-1)
 
 # previous time returns YYYYMM from x months ago
 prev.time = $(shell date.exe +%Y%m --date="$(1)month")
@@ -146,6 +164,9 @@ calc.seq = $(call sequence,0,$(call dec,$(1)))
 yearmo.to.seq = $(call plus,$(call multiply,$(call subtract,$(call calc.year,$(1)),1950),12),$(call dec,$(call calc.mo,$(1))))
 seq.to.yearmo = $(call plus,$(call divide,$(1),12),1950)$(call get,set.mo,$(call inc,$(call subtract,$(1),$(call multiply,$(call divide,$(1),12),12))))
 
+yearpp.to.seq = $(call plus,$(call multiply,$(call subtract,$(call calc.year,$(1)),1950),24),$(call dec,$(call calc.mo,$(1))))
+seq.to.yearpp = $(call plus,$(call divide,$(1),24),1950)$(call get,set.mo,$(call inc,$(call subtract,$(1),$(call multiply,$(call divide,$(1),24),24))))
+
 #ex.yearmo.to.seq := $(call yearmo.to.seq,$(curr.yearmo))
 #ex.seq.to.yearmo := $(call seq.to.yearmo,$(ex.yearmo.to.seq))
 
@@ -162,12 +183,20 @@ calc.n.mo.by.mo = $(foreach mo,$(call calc.seq,$(2)),$(call seq.to.yearmo,$(call
 #ex.calc.12.fp.by.fp := $(call calc.n.mo.by.mo,201511,12)
 #ex.calc.3.mo.by.mo  := $(call calc.n.mo.by.mo,201506, 3)
 
-# given fiscal period, return list of new fiscal periods
+# returns a list of N previous pay periods including current pay period by pay period. 
+calc.n.pp.by.pp = $(foreach mo,$(call calc.seq,$(2)),$(call seq.to.yearpp,$(call subtract,$(call yearpp.to.seq,$(1)),$(mo))))
+
+
+# given fiscal period, return list of new fiscal periods.  Some cheating is available
+# because of the symetrical nature of the arguments.
 
 fp.by.n.fy = $(sort $(call map,prepend.fp,$(call calc.n.mo.by.yr,$(call pick.fp,$(1)),$(2))))
 fp.by.n.fp = $(sort $(call map,prepend.fp,$(call calc.n.mo.by.mo,$(call pick.fp,$(1)),$(2))))
 fy.by.n.fy = $(sort $(call map,prepend.fy,$(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call pick.fy,$(1)),$(year)))))
 cy.by.n.cy = $(sort $(call map,prepend.cy,$(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call pick.cy,$(1)),$(year)))))
+pp.by.n.yr = $(sort $(call map,prepend.pp,$(call calc.n.mo.by.yr,$(call pick.pp,$(1)),$(2))))
+
+pp.by.n.pp = $(sort $(call map,prepend.pp,$(call calc.n.pp.by.pp,$(call pick.pp,$(1)),$(2))))
 
 yr.by.n.yr = $(sort $(foreach year,$(call calc.seq,$(2)),$(subst $(space),,$(call pick.yr.type,$(1))$(call subtract,$(call pick.cy,$(1)),$(year)))))
 term.by.n.term = $(sort $(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call calc.year,$(1)),$(year))$(call calc.mo,$(1))))
@@ -176,6 +205,12 @@ term.by.n.term = $(sort $(foreach year,$(call calc.seq,$(2)),$(call subtract,$(c
 #ex.fp.by.n.fp := $(call fp.by.n.fp,FP201511,60)
 
 # macros for use within recipes.  Assumes 2 param file naming format:  emp0-ENGR-FP201511.xls
+
+arg.pp.by.n.pp = $(call pp.by.n.pp,$(call arg.time,$(1)),$(2))
+arg.pp.by.n.pp.list = $(call to.list,$(call arg.pp.by.n.pp,$(1),$(2)))
+arg.pp.by.n.pp.sql = $(call to.list,$(call single.quote,$(call arg.pp.by.n.pp,$(1),$(2))))
+arg.pp.by.n.yr = $(call pp.by.n.yr,$(call arg.time,$(1)),$(2))
+arg.pp.by.n.yr.list = $(call to.list,$(call arg.pp.by.n.yr,$(@),$(2)))
 
 arg.fp.by.n.fy = $(call fp.by.n.fy,$(call arg.time,$(1)),$(2))
 arg.fp.by.n.fp = $(call fp.by.n.fp,$(call arg.time,$(1)),$(2))
@@ -219,7 +254,7 @@ convert.fp.to.words  = $(call calc.fpname,$(call pick.fp,$(1))) $(call calc.cy,$
 
 curr.fp.in.words := $(call convert.fp.to.words,FP$(curr.fp))
 
-time.vars := curr.timestamp curr.yearmo curr.year curr.mo curr.fy curr.fp curr.fp.in.words prev.yearmo prev.year prev.mo prev.fy prev.fp next.fy window.curr.4.fy.by.fy
+time.vars := curr.pp curr.timestamp curr.yearmo curr.year curr.mo curr.fy curr.fp curr.fp.in.words prev.yearmo prev.year prev.mo prev.fy prev.fp next.fy window.curr.4.fy.by.fy
 
 show-time.title := Usage info and time.vars available in makefile
 show-time:
