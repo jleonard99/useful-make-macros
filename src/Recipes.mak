@@ -254,3 +254,10 @@ define recipe-tex-to-xelatex-bib
 	xelatex --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
 endef
 
+define recipe-xls-to-xlsm
+	@echo [local] Converting $(firstword $(^)) to $(@)
+	@reporter.bat xls2xlsm --in=$(TMPDIR)$(firstword $(^)) --out=$(TMPDIR)$(@)
+	@reporter.bat highlight \
+	--xls-file=$(TMPDIR)$(@) \
+	--autofilter-sheet=$(call basename,$(@))
+endef
