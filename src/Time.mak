@@ -126,6 +126,7 @@ convert.cp.to.fp = $(call calc.fy,$(1))$(call calc.fm,$(1))
 curr.time := $(shell date.exe +%Y%m)
 curr.yearmo := $(call memoize,curr.time)
 curr.timestamp := $(shell date.exe +%Y%m%d%H%M)
+curr.date := $(shell date.exe +%Y%m%d)
 
 ## returns pieces of current month
 curr.year := $(call calc.year,$(curr.yearmo))
