@@ -202,6 +202,8 @@ pp.by.n.pp = $(sort $(call map,prepend.pp,$(call calc.n.pp.by.pp,$(call pick.pp,
 yr.by.n.yr = $(sort $(foreach year,$(call calc.seq,$(2)),$(subst $(space),,$(call pick.yr.type,$(1))$(call subtract,$(call pick.cy,$(1)),$(year)))))
 term.by.n.term = $(sort $(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call calc.year,$(1)),$(year))$(call calc.mo,$(1))))
 
+fp.by.n.fp.list = $(call to.list,$(call fp.by.n.fp,$(1),$(2)))
+
 #ex.fp.by.n.fy := $(call fp.by.n.fy,FP201511,5)
 #ex.fp.by.n.fp := $(call fp.by.n.fp,FP201511,60)
 
