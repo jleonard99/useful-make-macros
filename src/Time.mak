@@ -12,6 +12,7 @@ calc.mo = $(call substr,$(1),5,6)
 # pulls
 calc.fy = $(if $(findstring $(call substr,$(1),5,6),07 08 09 10 11 12),$(call inc,$(call substr,$(1),1,4)),$(call substr,$(1),1,4))
 calc.cy = $(if $(findstring $(call substr,$(1),5,6),07 08 09 10 11 12),$(call substr,$(1),1,4),$(call dec,$(call substr,$(1),1,4)))
+calc.termyear = $(if $(findstring $(call substr,$(1),5,6),20 30),$(call substr,$(1),1,4),$(call dec,$(call substr,$(1),1,4)))
 
 time.style = $(if $(findstring $(call substr,$(1),1,2),FP),fiscal-period,$(if $(findstring $(call substr,$(1),1,2),FY),fiscal-year,$(if $(findstring $(call substr,$(1),1,2),CY),calendar-year,term-code)))
 arg.time.style = $(call time.style,$(call arg.time,$(1)))
@@ -20,6 +21,7 @@ pick.yr.type = $(call substr,$(1),1,2)  # assumes year field starts with 2-chara
 pick.fy = $(call substr,$(1),3,6)
 pick.cy = $(call substr,$(1),3,6)
 pick.fp = $(call substr,$(1),3,8)
+pick.term = $(call substr,$(1),5,6)
 
 # Named pieces of filename arguments
 #
@@ -102,8 +104,19 @@ $(call set,set.mo,10,10)
 $(call set,set.mo,11,11)
 $(call set,set.mo,12,12)
 
+#convert integer term code to term name
+$(call set,set.termname,10,Fall)
+$(call set,set.termname,20,Spring)
+$(call set,set.termname,30,Summer)
+calc.termname = $(call get,set.termname,$(call substr,$(1),5,6))
+
 # Convert a calendar period (201506 to fiscal period 201511)
 convert.cp.to.fp = $(call calc.fy,$(1))$(call calc.fm,$(1))
+
+convert.fp.to.words  = $(call calc.fpname,$(call pick.fp,$(1))) $(call calc.cy,$(call pick.fp,$(1)))
+
+convert.term.to.words = $(call calc.termname,$(1)) $(call calc.termyear,$(1))
+
 
 ## curr.yearmo:  ex. 201506
 
@@ -213,8 +226,6 @@ window.prev.5.fp.by.fy  := $(call fp.by.n.fy,FP$(prev.fp),5)
 window.prev.3.fp.by.fp  := $(call fp.by.n.fp,FP$(prev.fp),3)
 window.prev.12.fp.by.fp := $(call fp.by.n.fp,FP$(prev.fp),12)
 window.curr.4.fy.by.fy :=  $(call fy.by.n.fy,FY$(curr.fy),4)
-
-convert.fp.to.words  = $(call calc.fpname,$(call pick.fp,$(1))) $(call calc.cy,$(call pick.fp,$(1)))
 
 curr.fp.in.words := $(call convert.fp.to.words,FP$(curr.fp))
 
