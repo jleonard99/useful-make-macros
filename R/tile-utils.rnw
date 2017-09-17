@@ -8,8 +8,8 @@ show.samples = FALSE
 
 source("molten-utils.R")
 
-default.bg.color  = "#00274F"      # GT adjusted PMS 539: CMYK 100,51,0,69 Dark blue
-default.border.color  = "#00274F"  # GT adjusted PMS 539: CMYK 100,51,0,69 Dark blue
+default.bg.color      = "#63656A"  # GT adjusted PMS 539: CMYK 100,51,0,69 Dark blue
+default.border.color  = "#63656A"  # GT adjusted PMS 539: CMYK 100,51,0,69 Dark blue
  
 ##default.bg.color = "steelblue4"
 default.fg.color = "white"

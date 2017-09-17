@@ -52,7 +52,7 @@ Below are the common R packages that are loded.
 
 desired.package.list = c("knitr","reshape2","tidyr","dplyr","lubridate","stringr","ggplot2","tibble","RSQLite","sqldf",
                          "xtable","tools","gridExtra","Hmisc","maps","mapproj",
-                         "WriteXLS","R2wd","xts","RColorBrewer","likert")
+                         "WriteXLS","R2wd","xts","RColorBrewer","likert","readxl")
 
 # fragile packages are necessary but might have not yet been upgraded to current version of R
 # use the fragile.package.list to keep track of what you might need.

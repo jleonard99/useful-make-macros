@@ -1,0 +1,51 @@
+\usepackage{geometry}
+\geometry{verbose,tmargin=2.0cm,bmargin=2.0cm,lmargin=2.5cm,rmargin=2.0cm}
+
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+\usepackage{alltt}
+\usepackage{fontspec}  % for xelatex
+\setmainfont{Calibri}  % this font matches Win10 documents
+
+\usepackage{upquote}
+\usepackage{verbatim}
+
+\usepackage{caption}
+\usepackage{url}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{ctable}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage[section]{placeins}
+\usepackage{fancyvrb}
+\usepackage{pdfpages}
+\usepackage{appendix}
+\usepackage{rotating}
+
+\newcommand{\asofday}{\today}
+
+\makeatletter
+\def\@maketitle{%
+  \newpage
+  %\null
+  %\vskip 1.5em%
+  \begin{center}%
+  \let \footnote \thanks
+    {\LARGE \bfseries \@title \par}%
+    \vskip 1.5em%
+    {\Large
+      \lineskip .5em%
+      \begin{tabular}[t]{c}%
+        \@author
+      \end{tabular}\par}%
+    \vskip .5em%
+    {\@date}%
+  \end{center}%
+  \par
+  \vskip 1.5em}
+\makeatother
