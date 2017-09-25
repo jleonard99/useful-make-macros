@@ -216,6 +216,7 @@ yr.by.n.yr = $(sort $(foreach year,$(call calc.seq,$(2)),$(subst $(space),,$(cal
 term.by.n.term = $(sort $(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call calc.year,$(1)),$(year))$(call calc.mo,$(1))))
 
 fp.by.n.fp.list = $(call to.list,$(call fp.by.n.fp,$(1),$(2)))
+pp.by.n.yr.list = $(call to.list,$(call pp.by.n.yr,$(1),$(2)))
 
 #ex.fp.by.n.fy := $(call fp.by.n.fy,FP201511,5)
 #ex.fp.by.n.fp := $(call fp.by.n.fp,FP201511,60)
