@@ -120,6 +120,11 @@ $(call set,set.mo,22,22)
 $(call set,set.mo,23,23)
 $(call set,set.mo,24,24)
 
+# convert integer term to 2-digit term (add leading zero if necessary)
+$(call set,set.term,10,10)
+$(call set,set.term,20,20)
+$(call set,set.term,30,30)
+
 #convert integer term code to term name
 $(call set,set.termname,10,Fall)
 $(call set,set.termname,20,Spring)
@@ -181,6 +186,9 @@ seq.to.yearmo = $(call plus,$(call divide,$(1),12),1950)$(call get,set.mo,$(call
 yearpp.to.seq = $(call plus,$(call multiply,$(call subtract,$(call calc.year,$(1)),1950),24),$(call dec,$(call calc.mo,$(1))))
 seq.to.yearpp = $(call plus,$(call divide,$(1),24),1950)$(call get,set.mo,$(call inc,$(call subtract,$(1),$(call multiply,$(call divide,$(1),24),24))))
 
+yearterm.to.seq = $(call plus,$(call multiply,$(call subtract,$(call calc.year,$(1)),1950),30),$(call dec,$(call calc.mo,$(1))))
+seq.to.yearterm = $(call plus,$(call divide,$(1),30),1950)$(call get,set.term,$(call inc,$(call subtract,$(1),$(call multiply,$(call divide,$(1),30),30))))
+
 #ex.yearmo.to.seq := $(call yearmo.to.seq,$(curr.yearmo))
 #ex.seq.to.yearmo := $(call seq.to.yearmo,$(ex.yearmo.to.seq))
 
@@ -200,6 +208,9 @@ calc.n.mo.by.mo = $(foreach mo,$(call calc.seq,$(2)),$(call seq.to.yearmo,$(call
 # returns a list of N previous pay periods including current pay period by pay period. 
 calc.n.pp.by.pp = $(foreach mo,$(call calc.seq,$(2)),$(call seq.to.yearpp,$(call subtract,$(call yearpp.to.seq,$(1)),$(mo))))
 
+# return a list of N previous terms including the current term by term
+# ex.calc.9.term.by.term = $(call calc.n.term.by.term,201810,9)
+calc.n.term.by.term = $(foreach mo,$(call calc.seq,$(2)),$(call seq.to.yearterm,$(call subtract,$(call yearterm.to.seq,$(1)),$(call multiply,$(mo),10))))
 
 # given fiscal period, return list of new fiscal periods.  Some cheating is available
 # because of the symetrical nature of the arguments.
@@ -213,7 +224,9 @@ pp.by.n.yr = $(sort $(call map,prepend.pp,$(call calc.n.mo.by.yr,$(call pick.pp,
 pp.by.n.pp = $(sort $(call map,prepend.pp,$(call calc.n.pp.by.pp,$(call pick.pp,$(1)),$(2))))
 
 yr.by.n.yr = $(sort $(foreach year,$(call calc.seq,$(2)),$(subst $(space),,$(call pick.yr.type,$(1))$(call subtract,$(call pick.cy,$(1)),$(year)))))
-term.by.n.term = $(sort $(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call calc.year,$(1)),$(year))$(call calc.mo,$(1))))
+
+term.by.n.yr = $(sort $(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call calc.year,$(1)),$(year))$(call calc.mo,$(1))))
+term.by.n.term = $(sort $(foreach mo,$(call calc.seq,$(2)),$(call seq.to.yearterm,$(call subtract,$(call yearterm.to.seq,$(1)),$(call multiply,$(mo),10)))))
 
 fp.by.n.fp.list = $(call to.list,$(call fp.by.n.fp,$(1),$(2)))
 pp.by.n.yr.list = $(call to.list,$(call pp.by.n.yr,$(1),$(2)))
@@ -234,6 +247,7 @@ arg.fp.by.n.fp = $(call fp.by.n.fp,$(call arg.time,$(1)),$(2))
 arg.fy.by.n.fy = $(call fy.by.n.fy,$(call arg.time,$(1)),$(2))
 arg.cy.by.n.cy = $(call cy.by.n.cy,$(call arg.time,$(1)),$(2))
 arg.yr.by.n.yr = $(call yr.by.n.yr,$(call arg.time,$(1)),$(2))
+arg.term.by.n.yr = $(call term.by.n.yr,$(call arg.time,$(1)),$(2))
 arg.term.by.n.term = $(call term.by.n.term,$(call arg.time,$(1)),$(2))
 
 arg.fp.by.n.fy.list = $(call to.list,$(call arg.fp.by.n.fy,$(1),$(2)))
@@ -241,11 +255,13 @@ arg.fp.by.n.fp.list = $(call to.list,$(call arg.fp.by.n.fp,$(1),$(2)))
 arg.fy.by.n.fy.list = $(call to.list,$(call arg.fy.by.n.fy,$(1),$(2)))
 arg.cy.by.n.cy.list = $(call to.list,$(call arg.cy.by.n.cy,$(1),$(2)))
 arg.yr.by.n.yr.list = $(call to.list,$(call arg.yr.by.n.yr,$(1),$(2)))
+arg.term.by.n.yr.list = $(call to.list,$(call arg.term.by.n.yr,$(1),$(2)))
 arg.term.by.n.term.list = $(call to.list,$(call arg.term.by.n.term,$(1),$(2)))
 
 arg.fp.by.n.fp.sql = $(call to.list,$(call single.quote,$(call arg.fp.by.n.fp,$(1),$(2))))
 arg.fy.by.n.fy.sql = $(call to.list,$(call single.quote,$(call arg.fy.by.n.fy,$(1),$(2))))
 arg.cy.by.n.cy.sql = $(call to.list,$(call single.quote,$(call arg.cy.by.n.cy,$(1),$(2))))
+arg.term.by.n.yr.sql = $(call to.list,$(call single.quote,$(call arg.term.by.n.yr,$(1),$(2))))
 arg.term.by.n.term.sql = $(call to.list,$(call single.quote,$(call arg.term.by.n.term,$(1),$(2))))
 
 arg.fp.by.5.fy  = $(call fp.by.n.fy,$(call arg.time,$(1)),5)
