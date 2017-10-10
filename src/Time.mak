@@ -138,7 +138,7 @@ convert.fp.to.words  = $(call calc.fpname,$(call pick.fp,$(1))) $(call calc.cy,$
 
 convert.term.to.words = $(call calc.termname,$(1)) $(call calc.termyear,$(1))
 
-convert.ay.to.words = $(1)
+convert.ay.to.words = $(call substr,$(1),1,4)$(call dec,$(call substr,$(1),5,6))-$(call substr,$(1),5,6)
 
 
 ## curr.yearmo:  ex. 201506
