@@ -260,8 +260,11 @@ if(cleanNames){
 names(pt) = gsub("_",".",names(pt))
 }
 if(rename.termcodes){
-termname = list('08'='Fall','02'='Spr','05'='Sum')
-names(pt)[which(substr(names(pt),1,2)=='20')] = paste(substr(names(pt)[which(substr(names(pt),1,2)=='20')],3,4),'-',termname[substr(names(pt)[which(substr(names(pt),1,2)=='20')],5,6)],sep="")
+termname = list('10'='Fall','20'='Spr','30'='Sum')
+names(pt)[which(substr(names(pt),1,2)=='20')] = paste(
+  ifelse(substr(names(pt)[which(substr(names(pt),1,2)=='20')],5,6)=="10",as.character(as.numeric(substr(names(pt)[which(substr(names(pt),1,2)=='20')],3,4))-1),substr(names(pt)[which(substr(names(pt),1,2)=='20')],3,4)),
+  '-',
+  termname[substr(names(pt)[which(substr(names(pt),1,2)=='20')],5,6)],sep="")
 }
 
 #if(commas){
