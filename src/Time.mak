@@ -156,7 +156,7 @@ curr.fp := $(call convert.cp.to.fp,$(curr.yearmo))
 curr.cy := $(call calc.year,$(curr.yearmo))
 
 ## returns current pay period using table VCU_PTRCALN
-curr.pp := $(shell sqlcmd -S jacksonhole.vcu.edu -d EGRDataWarehouse -Q "set nocount on;select top 1 ptrcaln_year*100+ptrcaln_payno from base_vcu_ptrcaln where ptrcaln_check_date<=getdate() order by 1 desc" -W -k2 -h-1)
+curr.pp := $(shell sqlcmd -S $(EGRPROD_SERVER) -d $(EGRPROD_DB) -Q "set nocount on;select top 1 ptrcaln_year*100+ptrcaln_payno from base_vcu_ptrcaln where ptrcaln_check_date<=getdate() order by 1 desc" -W -k2 -h-1)
 
 # previous time returns YYYYMM from x months ago
 prev.time = $(shell date.exe +%Y%m --date="$(1)month")
