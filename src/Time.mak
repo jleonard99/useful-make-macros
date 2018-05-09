@@ -62,7 +62,8 @@ prepend.time = time-$(1)
 prepend.unit = unit-$(1)
 
 to.list = $(subst $(space),$(comma),$(1))
-single.quote = \'$(subst $(space),\' \',$(1))\'
+#single.quote = \'$(subst $(space),\' \',$(1))\'
+single.quote = '$(subst $(space),' ',$(1))'
 
 # convert calendar month to fiscal period month
 $(call set,set.fm,01,07)

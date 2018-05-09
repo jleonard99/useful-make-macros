@@ -133,22 +133,22 @@ endef
 
 define recipe-rnw-to-tex
 	@echo [usefl] Knitting rnw to tex: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit\$$set(progress = FALSE, verbose = FALSE); suppressMessages(knit('$(firstword $(^))'))" 2>&1 | sed -e "s/^/\[usefl\] /"
+	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit$$set(progress = FALSE, verbose = FALSE); suppressMessages(knit('$(firstword $(^))'))" 2>&1 | sed -e "s/^/\[usefl\] /"
 endef
 
 define recipe-rhtml-to-html
 	@echo [usefl] Knitting rhtml to html: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit\$$set(progress = FALSE, verbose = FALSE); suppressMessages(knit2html('$(firstword $(^))'))" 2>&1 | sed -e "s/^/\[usefl\] /"
+	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit$$set(progress = FALSE, verbose = FALSE); suppressMessages(knit2html('$(firstword $(^))'))" 2>&1 | sed -e "s/^/\[usefl\] /"
 endef
 
 define recipe-rmd-to-html
 	@echo [usefl] Knitting rmd to html: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); library(markdown); build.file='$(@)'; opts_knit\$$set(progress = FALSE, verbose = FALSE); source('$(firstword $(subst ., ,$(@))).Rparams'); knit2html('$(firstword $(^))')" 2>&1 | sed -e "s/^/\[usefl\] /"
+	"$(R)" --slave --quiet -e "library(knitr); library(markdown); build.file='$(@)'; opts_knit$$set(progress = FALSE, verbose = FALSE); source('$(firstword $(subst ., ,$(@))).Rparams'); knit2html('$(firstword $(^))')" 2>&1 | sed -e "s/^/\[usefl\] /"
 endef
 
 define recipe-rmd-to-md
 	@echo [usefl] Knitting rmd to md: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); library(markdown); build.file='$(@)'; opts_knit\$$set(progress = FALSE, verbose = FALSE); knit('$(firstword $(^))')" 2>&1 | sed -e "s/^/\[usefl\] /"
+	"$(R)" --slave --quiet -e "library(knitr); library(markdown); build.file='$(@)'; opts_knit$$set(progress = FALSE, verbose = FALSE); knit('$(firstword $(^))')" 2>&1 | sed -e "s/^/\[usefl\] /"
 endef
 
 define recipe-md-to-tex
@@ -163,33 +163,33 @@ endef
 
 define recipe-rnw-to-r
 	@echo [usefl] Purling rnw to R: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit\$$set(progress = FALSE, verbose = FALSE); purl('$(firstword $(^))')" 2>&1 | sed -e "s/^/\[usefl-rnw-to-r\] /"
+	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit$$set(progress = FALSE, verbose = FALSE); purl('$(firstword $(^))')" 2>&1 | sed -e \"s/^/\[usefl-rnw-to-r\] /\"
 endef
 
 define recipe-r-to-rdata
 	@echo [usefl] Storing Rdata file: $(@)
-	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 1>$(NULL)
+	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')"
 endef
 
 define recipe-r-to-something
 	@echo [usefl] Writing $(word 2,$(subst ., ,$(@))) file: $(@) using $(word 1,$(^))
-	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 1>$(NULL)
+	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 
 endef
 
 
 define recipe-r-to-png
 	@echo [usefl] Painting PNG file: $(@) using $($(word 1,$(subst ., ,$(subst -, ,$(@)))).$(word 3,$(subst ., ,$(subst -, ,$(@))))-source)
-	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 1>$(NULL)
+	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')"
 endef
 
 define recipe-r-to-pdf
 	@echo [usefl] Painting PDF file: $(@) using $($(word 1,$(subst ., ,$(subst -, ,$(@)))).$(word 3,$(subst ., ,$(subst -, ,$(@))))-source)
-	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 1>$(NULL)
+	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')"
 endef
 
 define recipe-r-to-txt
 	@echo [usefl] Writing TXT file: $(@) using $($(word 1,$(subst ., ,$(subst -, ,$(@)))).$(word 3,$(subst ., ,$(subst -, ,$(@))))-source)
-	$(R) --slave --quiet -e "build.file='$(@)'; save.as.txt.file=T; source('$(word 1,$(subst ., ,$(@))).R')"  1>$(NULL)
+	$(R) --slave --quiet -e "build.file='$(@)'; save.as.txt.file=T; source('$(word 1,$(subst ., ,$(@))).R')" 
 endef
 
 define recipe-copy-file
