@@ -52,12 +52,12 @@ Below are the common R packages that are loded.
 
 desired.package.list = c("knitr","reshape2",
                          "tidyr","pillar","broom",
-                         "tidyverse",
+                         "tidyverse","readxl",
                          "maptools","rgdal","rgeos","geojson","geojsonio","maps","mapproj",
                          "RSQLite","sqldf",
                          "xtable","tools","gridExtra","Hmisc",
                          "WriteXLS","R2wd","xts","likert"
-				                 ,"tidycensus","ggalt","ggthemes","ggmap","RColorBrewer"
+				         ,"tidycensus","ggalt","ggthemes","ggmap","RColorBrewer"
 						 )
 
 # fragile packages are necessary but might have not yet been upgraded to current version of R
