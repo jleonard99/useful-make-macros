@@ -50,22 +50,35 @@ Below are the common R packages that are loded.
 # This is a list of commonly used packages.  Keep it maintained and upgrading
 # to newer versions of R will be much easier.
 
-desired.package.list = c("knitr","reshape2","tidyr","dplyr","lubridate","stringr","ggplot2","tibble","RSQLite","sqldf",
-                         "xtable","tools","gridExtra","Hmisc","maps","mapproj",
-                         "WriteXLS","R2wd","xts","RColorBrewer","likert","readxl")
+desired.package.list = c("knitr","reshape2",
+                         "tidyr","pillar","broom",
+                         "tidyverse","readxl",
+                         "maptools","rgdal","rgeos","geojson","geojsonio","maps","mapproj",
+                         "RSQLite","sqldf",
+                         "xtable","tools","gridExtra","Hmisc",
+                         "WriteXLS","R2wd","xts","likert"
+				         ,"tidycensus","ggalt","ggthemes","ggmap","RColorBrewer"
+						 )
 
 # fragile packages are necessary but might have not yet been upgraded to current version of R
 # use the fragile.package.list to keep track of what you might need.
 
-fragile.package.list = "RDCOMCLIENT"
+fragile.package.list = ""
+skip.package.list = "RColorBrewer"
 
-missing.package.list = setdiff(desired.package.list,intersect(rownames(installed.packages()),desired.package.list))
+missing.package.list = setdiff(desired.package.list,intersect(c(rownames(installed.packages()),skip.package.list),desired.package.list))
+
+##
+## Treat these packages different.  Don't install them, they are, but aren't.  Some sort of bug
+## 5/8/2018 JL
+##
 
 for (p in missing.package.list){
-    install.packages(p,repos="http://cran.rstudio.com/")
+	if (! p %in% skip.package.list) install.packages(p,type="win.binary")
 }
 
-missing.package.list = setdiff(desired.package.list,intersect(rownames(installed.packages()),desired.package.list))
+missing.package.list = setdiff(desired.package.list,intersect(c(rownames(installed.packages()),skip.package.list),desired.package.list))
+
 
 if( length(missing.package.list)> 1) {
   msg = paste("

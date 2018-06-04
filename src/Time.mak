@@ -57,11 +57,13 @@ prepend.pp = PP$(1)
 prepend.fy = FY$(1)
 prepend.cp = CP$(1)
 prepend.cy = CY$(1)
+prepend.ay = AY$(1)
 prepend.time = time-$(1)
 prepend.unit = unit-$(1)
 
 to.list = $(subst $(space),$(comma),$(1))
-single.quote = \'$(subst $(space),\' \',$(1))\'
+#single.quote = \'$(subst $(space),\' \',$(1))\'
+single.quote = '$(subst $(space),' ',$(1))'
 
 # convert calendar month to fiscal period month
 $(call set,set.fm,01,07)
@@ -221,6 +223,7 @@ fp.by.n.fy = $(sort $(call map,prepend.fp,$(call calc.n.mo.by.yr,$(call pick.fp,
 fp.by.n.fp = $(sort $(call map,prepend.fp,$(call calc.n.mo.by.mo,$(call pick.fp,$(1)),$(2))))
 fy.by.n.fy = $(sort $(call map,prepend.fy,$(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call pick.fy,$(1)),$(year)))))
 cy.by.n.cy = $(sort $(call map,prepend.cy,$(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call pick.cy,$(1)),$(year)))))
+ay.by.n.ay = $(sort $(call map,prepend.ay,$(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call pick.cy,$(1)),$(year)))))
 pp.by.n.yr = $(sort $(call map,prepend.pp,$(call calc.n.mo.by.yr,$(call pick.pp,$(1)),$(2))))
 
 pp.by.n.pp = $(sort $(call map,prepend.pp,$(call calc.n.pp.by.pp,$(call pick.pp,$(1)),$(2))))
@@ -248,6 +251,7 @@ arg.fp.by.n.fy = $(call fp.by.n.fy,$(call arg.time,$(1)),$(2))
 arg.fp.by.n.fp = $(call fp.by.n.fp,$(call arg.time,$(1)),$(2))
 arg.fy.by.n.fy = $(call fy.by.n.fy,$(call arg.time,$(1)),$(2))
 arg.cy.by.n.cy = $(call cy.by.n.cy,$(call arg.time,$(1)),$(2))
+arg.ay.by.n.ay = $(call ay.by.n.ay,$(call arg.time,$(1)),$(2))
 arg.yr.by.n.yr = $(call yr.by.n.yr,$(call arg.time,$(1)),$(2))
 arg.term.by.n.yr = $(call term.by.n.yr,$(call arg.time,$(1)),$(2))
 arg.term.by.n.term = $(call term.by.n.term,$(call arg.time,$(1)),$(2))
@@ -256,6 +260,7 @@ arg.fp.by.n.fy.list = $(call to.list,$(call arg.fp.by.n.fy,$(1),$(2)))
 arg.fp.by.n.fp.list = $(call to.list,$(call arg.fp.by.n.fp,$(1),$(2)))
 arg.fy.by.n.fy.list = $(call to.list,$(call arg.fy.by.n.fy,$(1),$(2)))
 arg.cy.by.n.cy.list = $(call to.list,$(call arg.cy.by.n.cy,$(1),$(2)))
+arg.ay.by.n.ay.list = $(call to.list,$(call arg.ay.by.n.ay,$(1),$(2)))
 arg.yr.by.n.yr.list = $(call to.list,$(call arg.yr.by.n.yr,$(1),$(2)))
 arg.term.by.n.yr.list = $(call to.list,$(call arg.term.by.n.yr,$(1),$(2)))
 arg.term.by.n.term.list = $(call to.list,$(call arg.term.by.n.term,$(1),$(2)))
@@ -263,6 +268,7 @@ arg.term.by.n.term.list = $(call to.list,$(call arg.term.by.n.term,$(1),$(2)))
 arg.fp.by.n.fp.sql = $(call to.list,$(call single.quote,$(call arg.fp.by.n.fp,$(1),$(2))))
 arg.fy.by.n.fy.sql = $(call to.list,$(call single.quote,$(call arg.fy.by.n.fy,$(1),$(2))))
 arg.cy.by.n.cy.sql = $(call to.list,$(call single.quote,$(call arg.cy.by.n.cy,$(1),$(2))))
+arg.ay.by.n.ay.sql = $(call to.list,$(call single.quote,$(call arg.ay.by.n.ay,$(1),$(2))))
 arg.term.by.n.yr.sql = $(call to.list,$(call single.quote,$(call arg.term.by.n.yr,$(1),$(2))))
 arg.term.by.n.term.sql = $(call to.list,$(call single.quote,$(call arg.term.by.n.term,$(1),$(2))))
 

@@ -168,28 +168,28 @@ endef
 
 define recipe-r-to-rdata
 	@echo [usefl] Storing Rdata file: $(@)
-	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 1>$(NULL)
+	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')"
 endef
 
 define recipe-r-to-something
 	@echo [usefl] Writing $(word 2,$(subst ., ,$(@))) file: $(@) using $(word 1,$(^))
-	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 1>$(NULL)
+	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 
 endef
 
 
 define recipe-r-to-png
 	@echo [usefl] Painting PNG file: $(@) using $($(word 1,$(subst ., ,$(subst -, ,$(@)))).$(word 3,$(subst ., ,$(subst -, ,$(@))))-source)
-	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 1>$(NULL)
+	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')"
 endef
 
 define recipe-r-to-pdf
 	@echo [usefl] Painting PDF file: $(@) using $($(word 1,$(subst ., ,$(subst -, ,$(@)))).$(word 3,$(subst ., ,$(subst -, ,$(@))))-source)
-	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')" 1>$(NULL)
+	$(R) --slave --quiet -e "build.file='$(@)'; source('$(word 1,$(^))')"
 endef
 
 define recipe-r-to-txt
 	@echo [usefl] Writing TXT file: $(@) using $($(word 1,$(subst ., ,$(subst -, ,$(@)))).$(word 3,$(subst ., ,$(subst -, ,$(@))))-source)
-	$(R) --slave --quiet -e "build.file='$(@)'; save.as.txt.file=T; source('$(word 1,$(subst ., ,$(@))).R')"  1>$(NULL)
+	$(R) --slave --quiet -e "build.file='$(@)'; save.as.txt.file=T; source('$(word 1,$(subst ., ,$(@))).R')" 
 endef
 
 define recipe-copy-file
