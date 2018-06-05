@@ -261,3 +261,10 @@ define recipe-xls-to-xlsm
 	--xls-file=$(TMPDIR)$(@) \
 	--autofilter-sheet=$(call basename,$(@))
 endef
+
+# Uses:  https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/
+define recipe-combine-pdfs
+	@echo [local] Combine PDFs into single PDF:  $(@)
+	@echo [local] PDFS to combine: $(^)
+	pdftk $(^) output $(@)
+endef

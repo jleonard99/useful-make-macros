@@ -52,7 +52,7 @@ Below are the common R packages that are loded.
 
 desired.package.list = c("knitr","reshape2",
                          "tidyr","pillar","broom",
-                         "tidyverse","readxl",
+                         "tidyverse","readxl","lubridate",
                          "maptools","rgdal","rgeos","geojson","geojsonio","maps","mapproj",
                          "RSQLite","sqldf",
                          "xtable","tools","gridExtra","Hmisc",
