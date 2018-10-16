@@ -233,6 +233,8 @@ yr.by.n.yr = $(sort $(foreach year,$(call calc.seq,$(2)),$(subst $(space),,$(cal
 term.by.n.yr = $(sort $(foreach year,$(call calc.seq,$(2)),$(call subtract,$(call calc.year,$(1)),$(year))$(call calc.mo,$(1))))
 term.by.n.term = $(sort $(foreach mo,$(call calc.seq,$(2)),$(call seq.to.yearterm,$(call subtract,$(call yearterm.to.seq,$(1)),$(call multiply,$(mo),10)))))
 
+yr.by.n.yr.list = $(call to.list,$(sort $(foreach year,$(call calc.seq,$(2)),$(subst $(space),,$(call pick.yr.type,$(1))$(call subtract,$(call pick.cy,$(1)),$(year))))))
+fy.by.n.fy.list = $(call to.list,$(sort $(foreach year,$(call calc.seq,$(2)),$(subst $(space),,$(call pick.yr.type,$(1))$(call subtract,$(call pick.cy,$(1)),$(year))))))
 fp.by.n.fp.list = $(call to.list,$(call fp.by.n.fp,$(1),$(2)))
 pp.by.n.yr.list = $(call to.list,$(call pp.by.n.yr,$(1),$(2)))
 
