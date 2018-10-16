@@ -163,7 +163,7 @@ endef
 
 define recipe-rnw-to-r
 	@echo [usefl] Purling rnw to R: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit$$set(progress = FALSE, verbose = FALSE); purl('$(firstword $(^))')" 2>&1 | sed -e \"s/^/\[usefl-rnw-to-r\] /\"
+	"$(R)" --slave --quiet -e "library(knitr); build.file='$(@)'; opts_knit$$set(progress = FALSE, verbose = FALSE); purl('$(firstword $(^))')" 2>&1 | sed -e "s/^/\[usefl-rnw-to-r\] /"
 endef
 
 define recipe-r-to-rdata
@@ -260,4 +260,11 @@ define recipe-xls-to-xlsm
 	@reporter.bat highlight \
 	--xls-file=$(TMPDIR)$(@) \
 	--autofilter-sheet=$(call basename,$(@))
+endef
+
+# Uses:  https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/
+define recipe-combine-pdfs
+	@echo [local] Combine PDFs into single PDF:  $(@)
+	@echo [local] PDFS to combine: $(^)
+	pdftk $(^) output $(@)
 endef
