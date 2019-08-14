@@ -194,7 +194,7 @@ endef
 
 define recipe-copy-file
 	@echo [usefl] Copying $(^)
-	$(COPY) $(^) $(@)
+	copy $(^) $(@)
 endef
 
 define recipe-sql-to-csv-dsgroot
