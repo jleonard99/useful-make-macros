@@ -193,8 +193,8 @@ define recipe-r-to-txt
 endef
 
 define recipe-copy-file
-	@echo [usefl] Copying $(^)
-	copy $(^) $(@)
+	@echo [usefl] Copying $(^) $(@)
+	cp.exe $(^) $(@)
 endef
 
 define recipe-sql-to-csv-dsgroot
