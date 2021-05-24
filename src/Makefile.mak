@@ -19,9 +19,12 @@ ifeq ($(findstring Windows,$(OSTYPE)),Windows)
 
 #  SHELLFLAGS = /c
 #  SHELL=cmd
-  
+
   SEP := \ 
-  t := $(shell cd)
+
+## sometimes causes problems!
+  t := $(shell cmd.exe /c CD)
+
   CURDIR :=$(subst \,/,$(t))
   TMPDIR :=$(t)$(SEP)
   NULL = nul:
@@ -35,7 +38,7 @@ ifeq ($(findstring Windows,$(OSTYPE)),Windows)
   build_time    = $(shell perl -e "use DateTime; print DateTime->now();")
   build_version = $(shell svnversion)
   build_folder  = $(CURDIR)
- 
+
 # if not windows, then probably linux variant.
   
 else
@@ -50,7 +53,6 @@ else
   REM = #
 
 endif
-
 
 # Customizations if RTOOLS is installed.
 
@@ -108,3 +110,4 @@ environment env:
 	@echo + pdflatex: "$(shell $(WHERE) pdflatex)"
 	@echo +     make: "$(shell $(WHERE) make)"
 	@echo +     grep: "$(shell $(WHERE) grep)"
+

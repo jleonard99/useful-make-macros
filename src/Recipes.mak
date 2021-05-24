@@ -213,6 +213,12 @@ define recipe-sql-to-csv-odsprod
 	$(REPORTER) csv --query-file=$(^) --csv-file=$(@) --DSN=$(ODSPROD_DSN) --USER=$(ODSPROD_USER) --PASS=$(ODSPROD_PASS)
 endef
 
+define recipe-sql-to-csv-fmi8prod
+	@echo [usefl] Query to csv file: $(@)
+	$(REPORTER) csv --query-file=$(^) --csv-file=$(@) --DSN=$(FMI8PROD_DSN) --USER=$(FMI8PROD_USER) --PASS=$(FMI8PROD_PASS)
+endef
+
+
 define recipe-tex-to-pdf
 	@echo [usefl] Building PDF file: $(@) - XELATEX
 	xelatex --quiet --job-name=$(word 1,$(subst ., ,$(@))) $(firstword $(^))
