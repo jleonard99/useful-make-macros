@@ -143,13 +143,14 @@ endef
 
 define recipe-rmd-to-html
 	@echo [usefl] Knitting rmd to html: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); library(markdown); build.file='$(@)'; opts_knit$$set(progress = FALSE, verbose = FALSE); source('$(firstword $(subst ., ,$(@))).Rparams'); knit2html('$(firstword $(^))')" 2>&1 | sed -e "s/^/\[usefl\] /"
+	"$(R)" --slave --quiet -e "library(knitr); library(markdown); build.file='$(@)'; opts_knit$$set(progress = FALSE, verbose = FALSE); source('$(firstword $(subst ., ,$(@))).Rparams'); rmarkdown::render('$(firstword $(^))')" 2>&1 | sed -e "s/^/\[usefl\] /"
 endef
 
 define recipe-rmd-to-md
 	@echo [usefl] Knitting rmd to md: $(@)
-	"$(R)" --slave --quiet -e "library(knitr); library(markdown); build.file='$(@)'; opts_knit$$set(progress = FALSE, verbose = FALSE); knit('$(firstword $(^))')" 2>&1 | sed -e "s/^/\[usefl\] /"
+	"$(R)" --slave --quiet -e "library(knitr); library(markdown); library(rmarkdown); build.file='$(@)'; opts_knit$$set(progress = FALSE, verbose = FALSE); knit('$(firstword $(^))')" 2>&1 | sed -e "s/^/\[usefl\] /"
 endef
+
 
 define recipe-md-to-tex
 	@echo [usefl] Pandoc md to tex: $(@)
